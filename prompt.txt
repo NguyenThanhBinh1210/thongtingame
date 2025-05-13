@@ -1,0 +1,136 @@
+# Yêu cầu Dự án: Admin Dashboard cho Website Tour Du lịch
+
+## Thư viện & Framework được sử dụng:
+dùng yarn add để cài đặt thư viện mới 
+1. UI Components:
+- NextUI (@nextui-org/react): Sử dụng cho các components chính
+- PrimeReact: Sử dụng cho các components phức tạp (Data Table, Calendar)
+- Headless UI & Heroicons: Cho các components cơ bản và icons
+- Framer Motion: Cho các animation
+- Dùng react-toastify để báo lỗi 
+2. Form Handling:
+- React Hook Form: Xử lý form
+- Zod: Validation schema
+- @hookform/resolvers: Tích hợp Zod với React Hook Form
+
+3. State Management & API:
+- React Query/TanStack Query: Quản lý state server và cache
+ Tất cả API calls phải được định nghĩa trong folder `src/apis/`
+- Mỗi module có file api riêng (vd: auth.api.ts, category.api.ts, tour.api.ts)
+- Không gọi axios trực tiếp trong components
+
+
+
+4. Rich Text Editor:
+- React Quill: Editor cho phần mô tả tour
+- Quill: Core library cho rich text editing
+
+5. Real-time Features:
+- Socket.io-client: Cho tính năng real-time (chat support, notifications)
+
+6. Styling:
+- TailwindCSS: Framework CSS chính
+- SASS: Cho custom styling
+- Classnames: Utility để handle conditional classes
+7  routes
+- xem file routes/useRouteElements.tsx  viết routes trong routes/useRouteElements.tsx
+## Yêu cầu Chức năng:
+1. Quản lý Tour:
+- CRUD operations cho tour
+- Upload và quản lý hình ảnh
+- Quản lý lịch trình
+- Pricing management
+- Quản lý đánh giá và feedback
+
+2. Quản lý Đặt Tour:
+- Xem và quản lý bookings
+- Xử lý thanh toán
+- Quản lý trạng thái booking
+- Gửi notifications
+
+3. Quản lý Users:
+- CRUD cho users (khách hàng, admin, guide)
+- Phân quyền (RBAC)
+- Quản lý profile
+
+4. Báo cáo & Thống kê:
+- Dashboard analytics
+- Báo cáo doanh thu
+- Thống kê bookings
+- User analytics
+
+5. Content Management:
+- Blog/News management
+- SEO optimization
+- Media library
+
+## Coding Standards:
+1. Architecture:
+- Sử dụng TypeScript
+- Modular architecture
+- Component-based development
+- Custom hooks cho logic tái sử dụng
+
+2. Performance:
+- Lazy loading cho routes
+- Image optimization
+- Caching với React Query
+- Code splitting
+
+3. Security:
+- JWT authentication
+- Role-based access control
+- Input validation
+- API security
+
+4. UI/UX:
+- Responsive design
+- Dark/Light mode
+- Loading states
+- Error handling
+- Toast notifications
+
+5. Code Quality:
+- ESLint configuration
+- Prettier formatting
+- Git workflow
+- Code documentation
+
+## API Integration:
+- RESTful API endpoints
+- Error handling
+- Loading states
+- Data transformation
+- File upload handling
+- Real-time updates với Socket.io
+
+## Testing:
+- Unit testing
+- Integration testing
+- E2E testing (nếu cần)
+- Test coverage monitoring
+
+7. Best Practices:
+- Luôn sử dụng TypeScript cho type safety
+- Tách biệt logic API khỏi components
+- Sử dụng React Query cho caching và state management
+- Implement error boundary cho xử lý lỗi
+- Sử dụng loading states và error states
+
+3. Type Definitions:
+- Định nghĩa interfaces trong folder `src/types/`
+- Sử dụng generic types cho response data
+- Export/import types để tái sử dụng
+
+4. HTTP Client:
+- Sử dụng http utility wrapper (src/utils/http.ts)
+- Cấu hình chung cho axios instance
+- Xử lý interceptors cho authentication
+- Handle refresh token
+
+5. Error Handling:
+- Định nghĩa custom error types
+- Xử lý lỗi nhất quán qua error interceptor
+- Return type safety với TypeScript
+
+6. Usage trong Components:

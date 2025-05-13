@@ -1,0 +1,128 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body::-webkit-scrollbar {
+  width: 10px;
+}
+body::-webkit-scrollbar-track {
+  background-color: #fafafa;
+}
+body::-webkit-scrollbar-thumb {
+  background: #bfbfbf;
+  border-radius: 50px;
+}
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+  padding: 0;
+  font: inherit;
+}
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+}
+input,
+select,
+textarea {
+  background-color: rgba(0, 0, 0, 0);
+  outline: none;
+}
+button {
+  cursor: pointer;
+  padding: 0;
+}
+body {
+  min-height: 100vh;
+  font-weight: 400;
+  font-size: 16px;
+  overflow: overlay;
+}
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+button.flex.py-4.w-full.h-full.gap-3.items-center.tap-highlight-transparent {
+  padding: 0 !important;
+  gap: 6px !important;
+}
+th,
+td {
+  padding-left: 8px;
+  padding-right: 8px;
+}
+.table-style .p-4.z-0.flex.flex-col.relative {
+  box-shadow: none;
+}
+.table-row-style1 td:first-child {
+  border-bottom-left-radius: 8px !important;
+  border-top-left-radius: 8px !important;
+  font-weight: 500;
+}
+.table-row-style1 td:last-child {
+  border-bottom-right-radius: 8px !important;
+  border-top-right-radius: 8px !important;
+}
+
+.ql-toolbar.ql-snow {
+  border-top-right-radius: 10px !important;
+  border-top-left-radius: 10px !important;
+}
+.ql-container.ql-snow {
+  border-bottom-right-radius: 10px !important;
+  border-bottom-left-radius: 10px !important;
+}
+
+.ql-editor img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 1em auto;
+}
+
+.ql-editor p {
+  margin-bottom: 1em;
+}
+
+.tox-tinymce {
+  border-radius: 8px !important;
+}
+
+.tox .tox-edit-area__iframe {
+  background-color: white !important;
+}
+
+.tox .tox-statusbar {
+  border-radius: 0 0 8px 8px !important;
+}
+
+.tox-tinymce-aux {
+  z-index: 9999 !important;
+}
+
+.content-area table,
+.content-area th,
+.content-area td {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+}
+
+.content-area th,
+.content-area td {
+  padding: 8px;
+}
+
+.content-area th {
+  background-color: #f2f2f2;
+}
