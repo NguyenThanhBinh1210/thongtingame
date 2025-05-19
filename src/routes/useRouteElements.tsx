@@ -17,11 +17,11 @@ import SearchHistoryMatch from '~/pages/SearchHistoryMatch'
 const useRouteElements = () => {
   function ProtecedRoute() {
     const { isAuthenticated } = useContext(AppContext)
-    return !isAuthenticated ? <Outlet /> : <Navigate to='login' />
+    return isAuthenticated ? <Outlet /> : <Navigate to='login' />
   }
   function RejectedRoute() {
     const { isAuthenticated } = useContext(AppContext)
-    return isAuthenticated ? <Outlet /> : <Navigate to='/' />
+    return !isAuthenticated ? <Outlet /> : <Navigate to='/' />
   }
 
   const routeElements = useRoutes([

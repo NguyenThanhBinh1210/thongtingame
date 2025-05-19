@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Editor } from '@tinymce/tinymce-react'
 import { useRef } from 'react'
 import { pcApi } from '~/apis/pc.api'
@@ -17,19 +17,18 @@ const CreatePCBuild = () => {
   const location = useLocation()
   const blog = location.state
   const valuesContent = blog?.content
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const editorRef = useRef<any>(null)
-  const [images, setImages] = useState<string[]>(blog ? [blog?.thumbnail] : [])
+  const [images, setImages] = useState<string[]>(blog ? [blog?.imageUrl] : [])
 
 
 
   // Tạo schema động dựa vào việc có đang chỉnh sửa tour hay không
   const createTourSchema = z.object({
     content: z.string().min(1, 'Vui lòng nhập nội dung'),
-    tags: z.string().min(1, 'Vui lòng chọn ít nhất một loại'),
+    tags: z.string().min(1, 'Vui lòng nhập ít nhất 1 chủ đề'),
     name: z.string().min(1, 'Vui lòng nhập tiêu đề'),
     description: z.string().min(1, 'Vui lòng nhập mô tả'),
-    imageUrl: z.string().min(1, 'Vui lòng nhập hình ảnh')
   })
 
   type FormData = z.infer<typeof createTourSchema>
@@ -44,9 +43,8 @@ const CreatePCBuild = () => {
     defaultValues: {
       name: blog ? blog.name : '',
       content: blog ? (Array.isArray(blog.content) ? blog.content[0] : blog.content) : '',
-      tags: blog ? blog.tags : ' ',
-      description: blog ? blog.tags : '',
-      imageUrl: blog ? blog.tags : '',
+      tags: blog ? blog.tags.join(',') : ' ',
+      description: blog ? blog.description : '',
     }
   })
 
@@ -66,24 +64,21 @@ const CreatePCBuild = () => {
   })
 
   const editTourMutation = useMutation({
-    // mutationFn: (data: any) => {
-    //   const tourId = blog._id
-    //   console.log('Tour ID for edit:', tourId)
-    //   return tourApi.editTour(tourId, data)
-    // },
-    // onSuccess: () => {
-    //   toast.success('Sửa tour thành công!')
-    //   navigate('/tours')
-    // },
-    // onError: (error) => {
-    //   console.error('Edit tour error:', error)
-    //   toast.error('Có lỗi xảy ra khi sửa tour!')
-    // }
+    mutationFn: (data: any) => {
+      const tourId = blog._id
+      return pcApi.editPC(tourId, data)
+    },
+    onSuccess: () => {
+      toast.success('Sửa thành công!')
+      navigate('/gameming')
+    },
+    onError: (error) => {
+      console.error('Edit error:', error)
+      toast.error('Có lỗi xảy ra khi sửa!')
+    }
   })
 
   const onSubmit = handleSubmit((data) => {
-    console.log('Form data:', data)
-
     // Đảm bảo dữ liệu đúng định dạng
     const blogData = {
       ...data,
@@ -91,15 +86,13 @@ const CreatePCBuild = () => {
       name: data.name,
       content: [data.content],
       isPublic: true,
-      tags: [data.tags],
+      tags: data.tags.split(',').map(tag => tag.trim()),
+
     }
 
-    console.log('Blog data to submit:', blogData)
-
     if (blog) {
-      // editTourMutation.mutate(blogData)
+      editTourMutation.mutate(blogData)
     } else {
-      console.log('Creating new PC build')
       createBlogMutation.mutate(blogData)
     }
   })
@@ -153,18 +146,20 @@ const CreatePCBuild = () => {
     <div className='p-6 max-w-4xl mx-auto'>
       <h1 className='text-2xl font-bold mb-6'>{blog ? 'Chỉnh sửa PC build' : 'Tạo PC build mới'}</h1>
 
-      <form onSubmit={onSubmit} className='space-y-6'>
+      <form onSubmit={onSubmit} className='space-y-3'>
         <Controller
           name='name'
           control={control}
           render={({ field }) => <Input {...field} label='Tiêu đề' errorMessage={errors.name?.message} />}
         />
+        {errors.name && <p className='text-red-500 text-sm '>{errors.name.message}</p>}
+
         <Controller
           name='description'
           control={control}
           render={({ field }) => <Input {...field} label='Mô tả' errorMessage={errors.description?.message} />}
         />
-
+        {errors.description && <p className='text-red-500 text-sm '>{errors.description.message}</p>}
         <div>
           <label className='block text-sm font-medium text-gray-700 mb-2'>Ảnh blog</label>
           <input type='file' accept='image/*' onChange={handleImageUpload} className='w-full' />
@@ -199,7 +194,7 @@ const CreatePCBuild = () => {
           control={control}
           render={({ field }) => <Input {...field} label='Chủ đề' errorMessage={errors.tags?.message} />}
         />
-
+        {errors.tags && <p className='text-red-500 text-sm '>{errors.tags.message}</p>}
 
 
         <Controller
@@ -395,7 +390,6 @@ const CreatePCBuild = () => {
           )}
         />
 
-
         {blog ? (
           <Button type='submit' color='primary' className='mt-6 w-full' isLoading={editTourMutation.isPending}>
             Chỉnh sửa
@@ -406,6 +400,7 @@ const CreatePCBuild = () => {
           </Button>
         )}
       </form>
+
     </div>
   )
 }

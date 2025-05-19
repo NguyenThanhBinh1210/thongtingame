@@ -2,9 +2,8 @@
 import http from '~/utils/http'
 
 export const blogApi = {
-  createBlog: (data: any) => http.post('/blogs', data),
+  createBlog: (data: any) => http.post('/news', data),
   getBlogs: (params: any) => http.get('/news', { params }),
-  deleteBlog: (id: string) => http.delete(`/blogs/${id}`),
-  editBlog: (id: string, data: any) => http.put(`/blogs/${id}`, data),
-  getCategories: () => http.get('/categories/level3')
+  deleteBlog: (slug: string) => http.delete(`/news/${slug}`),
+  editBlog: (slug: string, data: any) => http.put(`/news/${slug}`, data)
 }

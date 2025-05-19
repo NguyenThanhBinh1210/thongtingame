@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios'
 import {
   clearLS,
@@ -7,7 +8,6 @@ import {
   setProfileFromLS,
   setRefreshTokenToLS
 } from './auth'
-import { LoginResponse } from '~/types/auth.type'
 import { toast } from 'react-toastify'
 
 function createHttp(): AxiosInstance {
@@ -40,17 +40,15 @@ function createHttp(): AxiosInstance {
     (response: AxiosResponse) => {
       const { url } = response.config
       if (url === '/auth/login') {
-        const loginResponse = response.data as LoginResponse
+        const loginResponse = response.data as any
         console.log(loginResponse)
-
-        const dataProfile = loginResponse.data.user
-        console.log(loginResponse)
-        accessToken = loginResponse.data.accessToken
-        refreshToken = loginResponse.data.refreshToken
-        if (loginResponse.status === 'success') {
+        const dataProfile = loginResponse.userData
+        accessToken = loginResponse.accessToken
+        refreshToken = loginResponse.refreshToken
+        if (response.status === 201) {
           setProfileFromLS(dataProfile)
-          setAccesTokenToLS(accessToken)
-          setRefreshTokenToLS(refreshToken)
+          setAccesTokenToLS(accessToken || '')
+          setRefreshTokenToLS(refreshToken || '')
           window.location.href = '/'
         }
       } else if (url === '/auth/log-out') {

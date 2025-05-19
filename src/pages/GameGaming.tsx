@@ -6,7 +6,6 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import debounce from 'lodash/debounce'
-import { blogApi } from '~/apis/blog.api'
 import { pcApi } from '~/apis/pc.api'
 
 // Thêm interface cho Tour
@@ -94,7 +93,6 @@ const GameGaming = () => {
     queryKey: ['pc-build'],
     queryFn: async () => {
       const response = await pcApi.getPCBuild({})
-      console.log(response.data.data);
       if (response.data.data) {
         setBlogs(response.data.data.builds)
       }
@@ -105,11 +103,11 @@ const GameGaming = () => {
 
   const mutation = useMutation({
     mutationFn: (id: string) => {
-      return blogApi.deleteBlog(id)
+      return pcApi.deletePC(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] })
-      toast.success('Xoá blog thành công!')
+      queryClient.invalidateQueries({ queryKey: ['pc-build'] })
+      toast.success('Xoá PC build thành công!')
     },
     onError: () => {
       toast.error('Có lỗi xảy ra')

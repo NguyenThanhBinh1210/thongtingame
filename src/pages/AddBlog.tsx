@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
-import { useLocation } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import { Editor } from '@tinymce/tinymce-react'
 import { useRef } from 'react'
 import { blogApi } from '~/apis/blog.api'
@@ -17,9 +17,9 @@ const AddBlog = () => {
   const location = useLocation()
   const blog = location.state
   const valuesContent = blog?.content
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
   const editorRef = useRef<any>(null)
-  const [images, setImages] = useState<string[]>(blog ? [blog?.thumbnail] : [])
+  const [images, setImages] = useState<string[]>(blog ? [blog?.imageUrl] : [])
 
 
 
@@ -28,7 +28,7 @@ const AddBlog = () => {
     title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
     content: z.string().min(1, 'Vui lòng nhập nội dung'),
     summary: z.string().min(1, 'Vui lòng nhập mô tả'),
-    tags: z.string().min(1, 'Vui lòng chọn ít nhất một loại tour'),
+    tags: z.string().min(1, 'Vui lòng nhập ít nhất 1 chủ đề')
   })
 
   type FormData = z.infer<typeof createTourSchema>
@@ -43,7 +43,7 @@ const AddBlog = () => {
     defaultValues: {
       title: blog ? blog.title : '',
       content: blog ? (Array.isArray(blog.content) ? blog.content[0] : blog.content) : '',
-      tags: blog ? blog.tags : ' ',
+      tags: blog ? blog.tags.join(',') : ' ',
       summary: blog ? blog.summary : ' ',
     }
   })
@@ -64,43 +64,41 @@ const AddBlog = () => {
   })
 
   const editTourMutation = useMutation({
-    // mutationFn: (data: any) => {
-    //   const tourId = blog._id
-    //   console.log('Tour ID for edit:', tourId)
-    //   return tourApi.editTour(tourId, data)
-    // },
-    // onSuccess: () => {
-    //   toast.success('Sửa tour thành công!')
-    //   navigate('/tours')
-    // },
-    // onError: (error) => {
-    //   console.error('Edit tour error:', error)
-    //   toast.error('Có lỗi xảy ra khi sửa tour!')
-    // }
+    mutationFn: (data: any) => {
+      const slug = blog.slug
+      return blogApi.editBlog(slug, data)
+    },
+    onSuccess: () => {
+      toast.success('Sửa thành công!')
+      navigate('/blogs')
+    },
+    onError: (error) => {
+      console.error('Edit error:', error)
+      toast.error('Có lỗi xảy ra khi sửa!')
+    }
   })
 
   const onSubmit = handleSubmit((data) => {
-    console.log('Form data:', data)
-    console.log('Errors:', errors)
     // Đảm bảo dữ liệu đúng định dạng
     const blogData = {
       ...data,
-      thumbnail: images[0],
+      imageUrl: images[0],
       title: data.title,
       content: [data.content],
       isPublished: true,
-      tags: [data.tags],
+      description: data.summary,
+      tags: data.tags.split(',').map(tag => tag.trim()),
     }
 
     console.log('Blog data to submit:', blogData)
 
-    // if (blog) {
-    //   console.log('Editing blog with ID:', blog)
-    //   // editTourMutation.mutate(blogData)
-    // } else {
-    //   console.log('Creating new blog')
-    //   createBlogMutation.mutate(blogData)
-    // }
+    if (blog) {
+      console.log('Editing blog with ID:', blog)
+      editTourMutation.mutate(blogData)
+    } else {
+      console.log('Creating new blog')
+      createBlogMutation.mutate(blogData)
+    }
   })
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -158,12 +156,13 @@ const AddBlog = () => {
           control={control}
           render={({ field }) => <Input {...field} label='Tiêu đề' errorMessage={errors.title?.message} />}
         />
+        {errors.title && <p className='text-red-500 text-sm '>{errors.title.message}</p>}
         <Controller
           name='summary'
           control={control}
           render={({ field }) => <Input {...field} label='Mô tả' errorMessage={errors.summary?.message} />}
         />
-
+        {errors.summary && <p className='text-red-500 text-sm '>{errors.summary.message}</p>}
         <div>
           <label className='block text-sm font-medium text-gray-700 mb-2'>Ảnh blog</label>
           <input type='file' accept='image/*' onChange={handleImageUpload} className='w-full' />
@@ -192,14 +191,12 @@ const AddBlog = () => {
             </div>
           )}
         </div>
-
         <Controller
           name='tags'
           control={control}
           render={({ field }) => <Input {...field} label='Chủ đề' errorMessage={errors.tags?.message} />}
         />
-
-
+        {errors.tags && <p className='text-red-500 text-sm '>{errors.tags.message}</p>}
 
         <Controller
           name='content'
@@ -389,11 +386,11 @@ const AddBlog = () => {
                   remove_script_host: false
                 }}
               />
-              {errors.content && <p className='text-red-500 text-sm mt-1'>{errors.content.message}</p>}
+              {errors.content && <p className='text-red-500 text-sm '>{errors.content.message}</p>}
             </div>
           )}
         />
-
+        {errors.content && <p className='text-red-500 text-sm mt-1'>{errors.content.message}</p>}
         {blog ? (
           <Button type='submit' color='primary' className='mt-6 w-full' isLoading={editTourMutation.isPending}>
             Chỉnh sửa

@@ -103,8 +103,8 @@ const Blogs = () => {
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
-    mutationFn: (id: string) => {
-      return blogApi.deleteBlog(id)
+    mutationFn: (slug: string) => {
+      return blogApi.deleteBlog(slug)
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['blogs'] })
@@ -229,7 +229,7 @@ const Blogs = () => {
                     </Button>
                     <Button
                       onClick={() => {
-                        mutation.mutate(item._id)
+                        mutation.mutate(item.slug)
                       }}
                       size='sm'
                       isIconOnly

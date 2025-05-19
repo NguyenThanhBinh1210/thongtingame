@@ -2,6 +2,7 @@ import { ROLES } from './role.type'
 import { ResponseApi } from './utils.type'
 
 export interface Profile {
+  id: string
   name: string
   email: string
   role: ROLES
@@ -31,12 +32,11 @@ interface TokenInfo {
 
 export interface LoginResponse {
   data: {
-    user: Profile
-    wallets: Wallet
+    userData: Profile
     accessToken: string
     refreshToken: string
   }
-  statusCode: number,
+  statusCode: number
   status: string
 }
 
