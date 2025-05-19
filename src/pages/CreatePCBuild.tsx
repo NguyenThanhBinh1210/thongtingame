@@ -11,9 +11,9 @@ import { toast } from 'react-toastify'
 import { useLocation } from 'react-router-dom'
 import { Editor } from '@tinymce/tinymce-react'
 import { useRef } from 'react'
-import { blogApi } from '~/apis/blog.api'
+import { pcApi } from '~/apis/pc.api'
 
-const AddBlog = () => {
+const CreatePCBuild = () => {
   const location = useLocation()
   const blog = location.state
   const valuesContent = blog?.content
@@ -25,10 +25,11 @@ const AddBlog = () => {
 
   // Tạo schema động dựa vào việc có đang chỉnh sửa tour hay không
   const createTourSchema = z.object({
-    title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
     content: z.string().min(1, 'Vui lòng nhập nội dung'),
-    summary: z.string().min(1, 'Vui lòng nhập mô tả'),
-    tags: z.string().min(1, 'Vui lòng chọn ít nhất một loại tour'),
+    tags: z.string().min(1, 'Vui lòng chọn ít nhất một loại'),
+    name: z.string().min(1, 'Vui lòng nhập tiêu đề'),
+    description: z.string().min(1, 'Vui lòng nhập mô tả'),
+    imageUrl: z.string().min(1, 'Vui lòng nhập hình ảnh')
   })
 
   type FormData = z.infer<typeof createTourSchema>
@@ -41,24 +42,25 @@ const AddBlog = () => {
   } = useForm<FormData>({
     resolver: zodResolver(createTourSchema),
     defaultValues: {
-      title: blog ? blog.title : '',
+      name: blog ? blog.name : '',
       content: blog ? (Array.isArray(blog.content) ? blog.content[0] : blog.content) : '',
       tags: blog ? blog.tags : ' ',
-      summary: blog ? blog.summary : ' ',
+      description: blog ? blog.tags : '',
+      imageUrl: blog ? blog.tags : '',
     }
   })
 
   const createBlogMutation = useMutation({
     mutationFn: (data: any) => {
-      return blogApi.createBlog(data)
+      return pcApi.createPC(data)
     },
     onSuccess: () => {
-      toast.success('Tạo blog thành công!')
+      toast.success('Tạo PC build thành công!')
       reset()
       setImages([])
     },
     onError: (err) => {
-      toast.error('Có lỗi xảy ra khi tạo blog!')
+      toast.error('Có lỗi xảy ra khi tạo PC build!')
       console.log(err)
     }
   })
@@ -81,26 +83,25 @@ const AddBlog = () => {
 
   const onSubmit = handleSubmit((data) => {
     console.log('Form data:', data)
-    console.log('Errors:', errors)
+
     // Đảm bảo dữ liệu đúng định dạng
     const blogData = {
       ...data,
-      thumbnail: images[0],
-      title: data.title,
+      imageUrl: images[0],
+      name: data.name,
       content: [data.content],
-      isPublished: true,
+      isPublic: true,
       tags: [data.tags],
     }
 
     console.log('Blog data to submit:', blogData)
 
-    // if (blog) {
-    //   console.log('Editing blog with ID:', blog)
-    //   // editTourMutation.mutate(blogData)
-    // } else {
-    //   console.log('Creating new blog')
-    //   createBlogMutation.mutate(blogData)
-    // }
+    if (blog) {
+      // editTourMutation.mutate(blogData)
+    } else {
+      console.log('Creating new PC build')
+      createBlogMutation.mutate(blogData)
+    }
   })
 
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -150,18 +151,18 @@ const AddBlog = () => {
 
   return (
     <div className='p-6 max-w-4xl mx-auto'>
-      <h1 className='text-2xl font-bold mb-6'>{blog ? 'Chỉnh sửa Blog' : 'Tạo Blog Mới'}</h1>
+      <h1 className='text-2xl font-bold mb-6'>{blog ? 'Chỉnh sửa PC build' : 'Tạo PC build mới'}</h1>
 
       <form onSubmit={onSubmit} className='space-y-6'>
         <Controller
-          name='title'
+          name='name'
           control={control}
-          render={({ field }) => <Input {...field} label='Tiêu đề' errorMessage={errors.title?.message} />}
+          render={({ field }) => <Input {...field} label='Tiêu đề' errorMessage={errors.name?.message} />}
         />
         <Controller
-          name='summary'
+          name='description'
           control={control}
-          render={({ field }) => <Input {...field} label='Mô tả' errorMessage={errors.summary?.message} />}
+          render={({ field }) => <Input {...field} label='Mô tả' errorMessage={errors.description?.message} />}
         />
 
         <div>
@@ -394,6 +395,7 @@ const AddBlog = () => {
           )}
         />
 
+
         {blog ? (
           <Button type='submit' color='primary' className='mt-6 w-full' isLoading={editTourMutation.isPending}>
             Chỉnh sửa
@@ -408,4 +410,4 @@ const AddBlog = () => {
   )
 }
 
-export default AddBlog
+export default CreatePCBuild

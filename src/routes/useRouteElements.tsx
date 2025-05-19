@@ -8,18 +8,19 @@ import ManagerLayout from '~/layouts/ManagerLayout'
 import Profile from '~/pages/Profile'
 import Blogs from '~/pages/Blogs'
 import AddBlog from '~/pages/AddBlog'
+import GameGaming from '~/pages/GameGaming'
+import CreatePCBuild from '~/pages/CreatePCBuild'
+import SearchHistoryMatch from '~/pages/SearchHistoryMatch'
 
 
 
 const useRouteElements = () => {
   function ProtecedRoute() {
     const { isAuthenticated } = useContext(AppContext)
-    console.log(isAuthenticated);
     return !isAuthenticated ? <Outlet /> : <Navigate to='login' />
   }
   function RejectedRoute() {
     const { isAuthenticated } = useContext(AppContext)
-    console.log(isAuthenticated);
     return isAuthenticated ? <Outlet /> : <Navigate to='/' />
   }
 
@@ -68,14 +69,27 @@ const useRouteElements = () => {
             </ManagerLayout>
           )
         },
-
-
-
+        {
+          path: '/gameming',
+          element: (
+            <ManagerLayout>
+              <GameGaming />
+            </ManagerLayout>
+          )
+        },
         {
           path: '/blogs/create',
           element: (
             <ManagerLayout>
               <AddBlog />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/gameming/create',
+          element: (
+            <ManagerLayout>
+              <CreatePCBuild />
             </ManagerLayout>
           )
         },
@@ -85,6 +99,22 @@ const useRouteElements = () => {
           element: (
             <ManagerLayout>
               <AddBlog />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/gameming/edit/:slug',
+          element: (
+            <ManagerLayout>
+              <CreatePCBuild />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/gameming/lol-history',
+          element: (
+            <ManagerLayout>
+              <SearchHistoryMatch />
             </ManagerLayout>
           )
         },

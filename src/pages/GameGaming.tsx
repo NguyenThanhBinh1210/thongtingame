@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Pagination, Input, Chip, } from '@nextui-org/react'
+import { Button, Pagination, Input, } from '@nextui-org/react'
 import { useCallback, useMemo, useState } from 'react'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -7,23 +7,27 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import debounce from 'lodash/debounce'
 import { blogApi } from '~/apis/blog.api'
+import { pcApi } from '~/apis/pc.api'
 
 // Thêm interface cho Tour
 interface Tour {
   _id: string
-  title: string
+  name: string
   slug: string
   imageUrl: string
   content: string
-  tags: string[]
-  summary?: string
+  description: string
   createdAt: string
 }
 
 // Add Language interface
+export interface Language {
+  _id: string;
+  code: string;
+  name: string;
+}
 
-
-const Blogs = () => {
+const GameGaming = () => {
   const [blogs, setBlogs] = useState<Tour[]>([])
   console.log(blogs);
   const navigate = useNavigate()
@@ -47,9 +51,7 @@ const Blogs = () => {
   const filteredItems = useMemo(() => {
     const filtered = blogs?.filter((blog) => {
       const matchesSearch =
-        blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        blog.tags.map(tag => tag.toLowerCase()).includes(searchTerm.toLowerCase())
-
+        blog.name.toLowerCase().includes(searchTerm.toLowerCase())
 
 
       return matchesSearch
@@ -75,8 +77,7 @@ const Blogs = () => {
           total={Math.ceil(
             (blogs?.filter(
               (blog) =>
-                blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                blog.tags.map(tag => tag.toLowerCase()).includes(searchTerm.toLowerCase())
+                blog.name.toLowerCase().includes(searchTerm.toLowerCase())
             ).length || 0) / rowsPerPage
           )}
           variant='light'
@@ -90,13 +91,13 @@ const Blogs = () => {
 
   // Update blogs query to include language
   useQuery({
-    queryKey: ['blogs'],
+    queryKey: ['pc-build'],
     queryFn: async () => {
-      const response = await blogApi.getBlogs({})
+      const response = await pcApi.getPCBuild({})
+      console.log(response.data.data);
       if (response.data.data) {
-        setBlogs(response.data.data.articles)
+        setBlogs(response.data.data.builds)
       }
-
     }
   })
 
@@ -130,18 +131,21 @@ const Blogs = () => {
   return (
     <div>
       <div className='flex justify-between items-center mb-4'>
-        <Link to='/blogs/create'>
+        <Link to='/gameming/create'>
           <Button size='sm' color='primary'>
-            Tạo blog
+            Tạo PC build
           </Button>
         </Link>
-
+        {/* <ButtonGroup color='primary' size='sm'>
+          <Button disabled className='disabled:bg-gray-300'>Của tôi</Button>
+          <Button disabled className='disabled:bg-gray-300'>Tất cả</Button>
+        </ButtonGroup> */}
         <div className='flex gap-4 items-center'>
 
 
           <Input
             className='w-[300px]'
-            placeholder='Tìm kiếm theo tên blog hoặc tags...'
+            placeholder='Tìm kiếm theo tên blog hoặc danh mục...'
             onChange={(e) => debouncedSearch(e.target.value)}
             startContent={
               <svg
@@ -165,10 +169,9 @@ const Blogs = () => {
 
       <Table className='mt-4' isHeaderSticky isStriped aria-label='table'>
         <TableHeader>
-          <TableColumn className='w-[50px]'>Mã blog</TableColumn>
+          <TableColumn className='w-[50px]'>Mã PC build</TableColumn>
           <TableColumn className='w-[100px] text-center'>Ảnh</TableColumn>
           <TableColumn className='  min-w-[300px]'>Tiêu đề</TableColumn>
-          <TableColumn className='  min-w-[300px]'>Tags</TableColumn>
           <TableColumn className='text-center'>Mô tả</TableColumn>
           <TableColumn className='text-center'> </TableColumn>
         </TableHeader>
@@ -182,28 +185,21 @@ const Blogs = () => {
                 <TableCell>
                   <img className='aspect-square object-cover' src={item.imageUrl} alt='anh' />
                 </TableCell>
-                <TableCell className='uppercase'>{item.title}</TableCell>
-                <TableCell className='uppercase'>
-                  <div className='flex flex-wrap gap-2'>
-                    {item.tags.map((item, index) => (
-                      <Chip color='primary' size='sm' key={index}>{item}</Chip>
-                    ))}
-                  </div>
-                </TableCell>
+                <TableCell className='uppercase'>{item.name}</TableCell>
                 <TableCell>
                   <div className='space-y-1'>
                     <div className='flex gap-3 text-xs'>
                       <p className='italic'>{formatDate(item.createdAt)}</p>
-                      <p className='text-orange-900'></p>
+                      <p className='text-orange-900'>1976048</p>
                     </div>
-                    <div className='text-xs line-clamp-3' dangerouslySetInnerHTML={{ __html: item.summary || item.content }}></div>
+                    <div className='text-xs line-clamp-3' dangerouslySetInnerHTML={{ __html: item.description || item.content }}></div>
                   </div>
                 </TableCell>
                 <TableCell>
                   <div className=' uppercase flex gap-x-2 items-center'>
                     <Button
                       onClick={() => {
-                        navigate(`edit/${item.slug}`, {
+                        navigate(`edit/${item._id}`, {
                           state: item
                         })
                       }}
@@ -276,4 +272,4 @@ const Blogs = () => {
   )
 }
 
-export default Blogs
+export default GameGaming

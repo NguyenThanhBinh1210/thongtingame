@@ -98,7 +98,21 @@ export const menuCMS = [
       </svg>
     ),
     title: 'Quản lý thiết bị',
-    path: 'gameming'
+    subMenu: [
+      {
+        title: 'Tạo PC build',
+        path: '/gameming/create'
+      },
+      {
+        title: 'Danh sách PC build',
+        path: '/gameming'
+      },
+      {
+        title: 'Tìm lịch sử đấu',
+        path: '/gameming/lol-history'
+      },
+
+    ]
   },
 
 

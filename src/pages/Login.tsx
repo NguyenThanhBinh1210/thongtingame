@@ -32,7 +32,6 @@ const Login = () => {
   const mutation = useMutation({
     mutationFn: (body: LoginBodyType) => loginAccount(body),
     onSuccess: (data) => {
-      console.log(data);
       const newUser = data.data.user
       setProfile(newUser)
       navigate('/')

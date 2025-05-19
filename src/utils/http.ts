@@ -5,8 +5,7 @@ import {
   getRefreshTokenFromLS,
   setAccesTokenToLS,
   setProfileFromLS,
-  setRefreshTokenToLS,
-  setWalletFromLS
+  setRefreshTokenToLS
 } from './auth'
 import { LoginResponse } from '~/types/auth.type'
 import { toast } from 'react-toastify'
@@ -17,7 +16,7 @@ function createHttp(): AxiosInstance {
   // let refreshTokenRequest: Promise<string> | null = null
 
   const instance = axios.create({
-    baseURL: 'http://localhost:4001',
+    baseURL: 'https://be-lol.onrender.com/api',
     timeout: 10000,
     headers: {
       'Content-Type': 'application/json'
@@ -42,16 +41,14 @@ function createHttp(): AxiosInstance {
       const { url } = response.config
       if (url === '/auth/login') {
         const loginResponse = response.data as LoginResponse
+        console.log(loginResponse)
 
         const dataProfile = loginResponse.data.user
-        const dataWallet = loginResponse.data.wallets
         console.log(loginResponse)
         accessToken = loginResponse.data.accessToken
         refreshToken = loginResponse.data.refreshToken
         if (loginResponse.status === 'success') {
           setProfileFromLS(dataProfile)
-          setWalletFromLS(dataWallet)
-
           setAccesTokenToLS(accessToken)
           setRefreshTokenToLS(refreshToken)
           window.location.href = '/'
