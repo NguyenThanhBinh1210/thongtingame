@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Pagination, Input, } from '@nextui-org/react'
+import { Button, Pagination, Input, Chip, } from '@nextui-org/react'
 import { useCallback, useMemo, useState } from 'react'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -17,6 +17,7 @@ interface Tour {
   content: string
   description: string
   createdAt: string
+  tags: string[]
 }
 
 // Add Language interface
@@ -50,7 +51,7 @@ const GameGaming = () => {
   const filteredItems = useMemo(() => {
     const filtered = blogs?.filter((blog) => {
       const matchesSearch =
-        blog.name.toLowerCase().includes(searchTerm.toLowerCase())
+        blog.name.toLowerCase().includes(searchTerm.toLowerCase()) || blog.tags.map(tag => tag.toLowerCase()).includes(searchTerm.toLowerCase())
 
 
       return matchesSearch
@@ -76,7 +77,7 @@ const GameGaming = () => {
           total={Math.ceil(
             (blogs?.filter(
               (blog) =>
-                blog.name.toLowerCase().includes(searchTerm.toLowerCase())
+                blog.name.toLowerCase().includes(searchTerm.toLowerCase()) || blog.tags.map(tag => tag.toLowerCase()).includes(searchTerm.toLowerCase())
             ).length || 0) / rowsPerPage
           )}
           variant='light'
@@ -143,7 +144,7 @@ const GameGaming = () => {
 
           <Input
             className='w-[300px]'
-            placeholder='Tìm kiếm theo tên blog hoặc danh mục...'
+            placeholder='Tìm kiếm theo tên PC build hoặc chủ đề...'
             onChange={(e) => debouncedSearch(e.target.value)}
             startContent={
               <svg
@@ -170,6 +171,7 @@ const GameGaming = () => {
           <TableColumn className='w-[50px]'>Mã PC build</TableColumn>
           <TableColumn className='w-[100px] text-center'>Ảnh</TableColumn>
           <TableColumn className='  min-w-[300px]'>Tiêu đề</TableColumn>
+          <TableColumn className='  min-w-[300px]'>Chủ đề</TableColumn>
           <TableColumn className='text-center'>Mô tả</TableColumn>
           <TableColumn className='text-center'> </TableColumn>
         </TableHeader>
@@ -184,6 +186,13 @@ const GameGaming = () => {
                   <img className='aspect-square object-cover' src={item.imageUrl} alt='anh' />
                 </TableCell>
                 <TableCell className='uppercase'>{item.name}</TableCell>
+                <TableCell className='uppercase'>
+                  <div className='flex flex-wrap gap-2'>
+                    {item.tags.map((items, indexs) => (
+                      <Chip color='primary' size='sm' key={indexs}>{items}</Chip>
+                    ))}
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className='space-y-1'>
                     <div className='flex gap-3 text-xs'>
