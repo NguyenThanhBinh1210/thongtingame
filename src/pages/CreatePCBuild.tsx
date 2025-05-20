@@ -84,7 +84,7 @@ const CreatePCBuild = () => {
       ...data,
       imageUrl: images[0],
       name: data.name,
-      content: [data.content],
+      content: data.content,
       isPublic: true,
       tags: data.tags.split(',').map(tag => tag.trim()),
 

@@ -84,7 +84,7 @@ const AddBlog = () => {
       ...data,
       imageUrl: images[0],
       title: data.title,
-      content: [data.content],
+      content: data.content,
       isPublished: true,
       description: data.summary,
       tags: data.tags.split(',').map(tag => tag.trim()),
