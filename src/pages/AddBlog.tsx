@@ -205,7 +205,7 @@ const AddBlog = () => {
             <div>
               <label className='block mb-2'>Nội dung</label>
               <Editor
-                apiKey='jh49do00vb82towfawrulptots9frojd930x4hmxm0d4rdjw'
+                apiKey='bhwlny7n0ah66rim6u23wtdzys11lr2gr11mq9p4cbgsp0a6'
                 onInit={(_: any, editor: any) => {
                   editorRef.current = editor
 
