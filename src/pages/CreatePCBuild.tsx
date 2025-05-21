@@ -396,7 +396,7 @@ const CreatePCBuild = () => {
           </Button>
         ) : (
           <Button type='submit' color='primary' className='mt-6 w-full' isLoading={createBlogMutation.isPending}>
-            Tạo Blog
+            Tạo PC build
           </Button>
         )}
       </form>

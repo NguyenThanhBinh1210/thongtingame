@@ -11,6 +11,7 @@ import AddBlog from '~/pages/AddBlog'
 import GameGaming from '~/pages/GameGaming'
 import CreatePCBuild from '~/pages/CreatePCBuild'
 import SearchHistoryMatch from '~/pages/SearchHistoryMatch'
+import Accounts from '~/pages/Accounts'
 
 
 
@@ -74,6 +75,14 @@ const useRouteElements = () => {
           element: (
             <ManagerLayout>
               <GameGaming />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/accounts',
+          element: (
+            <ManagerLayout>
+              <Accounts />
             </ManagerLayout>
           )
         },

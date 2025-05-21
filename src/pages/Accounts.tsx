@@ -1,36 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Pagination, Input, Chip, } from '@nextui-org/react'
+import { Button, Pagination, Input, Switch, } from '@nextui-org/react'
 import { useCallback, useMemo, useState } from 'react'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react'
-import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import debounce from 'lodash/debounce'
-import { pcApi } from '~/apis/pc.api'
+import { deleteAccount, getAccount } from '~/apis/user.api'
 
 // Thêm interface cho Tour
 interface Tour {
   _id: string
+  isActive: boolean
+  role: string
+  email: string
   name: string
-  slug: string
-  imageUrl: string
-  content: string
-  description: string
-  createdAt: string
-  tags: string[]
 }
 
 // Add Language interface
-export interface Language {
-  _id: string;
-  code: string;
-  name: string;
-}
 
-const GameGaming = () => {
+
+const Accounts = () => {
   const [blogs, setBlogs] = useState<Tour[]>([])
   console.log(blogs);
-  const navigate = useNavigate()
   const [rowsPerPage, setRowsPerPage] = useState<number>(10)
   const [page, setPage] = useState<number>(1)
   // const pages = Math.ceil(blogs?.length / rowsPerPage)
@@ -48,12 +39,15 @@ const GameGaming = () => {
     []
   )
 
+  // const handleChangeStatus = (id: string) => {
+  //   console.log(id)
+  // }
+
   const filteredItems = useMemo(() => {
     const filtered = blogs?.filter((blog) => {
       const matchesSearch =
-        blog.name.toLowerCase().includes(searchTerm.toLowerCase()) || blog.tags.map(tag => tag.toLowerCase()).includes(searchTerm.toLowerCase())
-
-
+        blog.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        blog.email.toLowerCase().includes(searchTerm.toLowerCase())
       return matchesSearch
     })
 
@@ -77,7 +71,8 @@ const GameGaming = () => {
           total={Math.ceil(
             (blogs?.filter(
               (blog) =>
-                blog.name.toLowerCase().includes(searchTerm.toLowerCase()) || blog.tags.map(tag => tag.toLowerCase()).includes(searchTerm.toLowerCase())
+                blog.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                blog.email.toLowerCase().includes(searchTerm.toLowerCase())
             ).length || 0) / rowsPerPage
           )}
           variant='light'
@@ -91,11 +86,11 @@ const GameGaming = () => {
 
   // Update blogs query to include language
   useQuery({
-    queryKey: ['pc-build'],
+    queryKey: ['accounts'],
     queryFn: async () => {
-      const response = await pcApi.getPCBuild({})
+      const response = await getAccount({})
       if (response.data.data) {
-        setBlogs(response.data.data.builds)
+        setBlogs(response.data.data)
       }
     }
   })
@@ -104,47 +99,27 @@ const GameGaming = () => {
 
   const mutation = useMutation({
     mutationFn: (id: string) => {
-      return pcApi.deletePC(id)
+      return deleteAccount(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['pc-build'] })
-      toast.success('Xoá PC build thành công!')
+      queryClient.invalidateQueries({ queryKey: ['accounts'] })
+      toast.success('Xoá tài khoản thành công!')
     },
     onError: () => {
       toast.error('Có lỗi xảy ra')
     }
   })
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString)
-    const options: Intl.DateTimeFormatOptions = {
-      month: 'numeric',
-      day: 'numeric',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      hour12: true
-    }
-    return date.toLocaleString('en-US', options)
-  }
+
   return (
     <div>
       <div className='flex justify-between items-center mb-4'>
-        <Link to='/gameming/create'>
-          <Button size='sm' color='primary'>
-            Tạo PC build
-          </Button>
-        </Link>
-        {/* <ButtonGroup color='primary' size='sm'>
-          <Button disabled className='disabled:bg-gray-300'>Của tôi</Button>
-          <Button disabled className='disabled:bg-gray-300'>Tất cả</Button>
-        </ButtonGroup> */}
+        <div></div>
         <div className='flex gap-4 items-center'>
 
 
           <Input
             className='w-[300px]'
-            placeholder='Tìm kiếm theo tên PC build hoặc chủ đề...'
+            placeholder='Tìm kiếm theo tên tài khoản hoặc email...'
             onChange={(e) => debouncedSearch(e.target.value)}
             startContent={
               <svg
@@ -168,11 +143,11 @@ const GameGaming = () => {
 
       <Table className='mt-4' isHeaderSticky isStriped aria-label='table'>
         <TableHeader>
-          <TableColumn className='w-[50px]'>Mã PC build</TableColumn>
-          <TableColumn className='w-[100px] text-center'>Ảnh</TableColumn>
-          <TableColumn className='  min-w-[300px]'>Tiêu đề</TableColumn>
-          <TableColumn className='  min-w-[300px]'>Chủ đề</TableColumn>
-          <TableColumn className='text-center'>Mô tả</TableColumn>
+          <TableColumn className='w-[50px]'>Mã tài khoản</TableColumn>
+          <TableColumn className='min-w-[300px]'>Tên</TableColumn>
+          <TableColumn className='min-w-[300px]'>Email</TableColumn>
+          <TableColumn className=''>Trạng thái</TableColumn>
+          <TableColumn className=''>Role</TableColumn>
           <TableColumn className='text-center'> </TableColumn>
         </TableHeader>
         {blogs?.length === 0 ? (
@@ -182,29 +157,20 @@ const GameGaming = () => {
             {filteredItems?.map((item: Tour, index: number) => (
               <TableRow key={index + 1}>
                 <TableCell>{index + 1}</TableCell>
-                <TableCell>
-                  <img className='aspect-square object-cover' src={item.imageUrl} alt='anh' />
-                </TableCell>
+
                 <TableCell className='uppercase'>{item.name}</TableCell>
-                <TableCell className='uppercase'>
-                  <div className='flex flex-wrap gap-2'>
-                    {item.tags.map((items, indexs) => (
-                      <Chip color='primary' size='sm' key={indexs}>{items}</Chip>
-                    ))}
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <div className='space-y-1'>
-                    <div className='flex gap-3 text-xs'>
-                      <p className='italic'>{formatDate(item.createdAt)}</p>
-                      <p className='text-orange-900'>1976048</p>
-                    </div>
-                    <div className='text-xs line-clamp-3' dangerouslySetInnerHTML={{ __html: item.description || item.content }}></div>
-                  </div>
-                </TableCell>
+                <TableCell className='uppercase'>{item.email}</TableCell>
+                <TableCell className='uppercase'><Switch size='sm' isSelected={item.isActive}
+                // onValueChange={handleChangeStatus(item._id)}
+                >
+
+                </Switch></TableCell>
+
+                <TableCell className='uppercase'>{item.role}</TableCell>
+
                 <TableCell>
                   <div className=' uppercase flex gap-x-2 items-center'>
-                    <Button
+                    {/* <Button
                       onClick={() => {
                         navigate(`edit/${item._id}`, {
                           state: item
@@ -229,7 +195,7 @@ const GameGaming = () => {
                           d='m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10'
                         />
                       </svg>
-                    </Button>
+                    </Button> */}
                     <Button
                       onClick={() => {
                         mutation.mutate(item._id)
@@ -279,4 +245,4 @@ const GameGaming = () => {
   )
 }
 
-export default GameGaming
+export default Accounts

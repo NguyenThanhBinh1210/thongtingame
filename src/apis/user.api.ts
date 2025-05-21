@@ -13,3 +13,11 @@ export const createUser = (body: {
 export const getAccount = (params?: { limit?: number; page?: number }) => {
   return http.get('/users', { params })
 }
+
+export const updateAccount = (id: string, body: { isActive: boolean }) => {
+  return http.put(`/users/${id}`, body)
+}
+
+export const deleteAccount = (id: string) => {
+  return http.delete(`/users/${id}`)
+}
