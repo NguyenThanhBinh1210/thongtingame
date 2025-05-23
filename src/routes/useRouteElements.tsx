@@ -53,7 +53,7 @@ const useRouteElements = () => {
           index: true,
           element: (
             <ManagerLayout>
-              <>Trang chủ</>
+               <Blogs />
             </ManagerLayout>
           )
         },

@@ -16,7 +16,7 @@ function createHttp(): AxiosInstance {
   // let refreshTokenRequest: Promise<string> | null = null
 
   const instance = axios.create({
-    baseURL: 'http://15.235.130.193:4000/api',
+    baseURL: 'https://api.loltips.net/api',
     timeout: 10000,
     headers: {
       'Content-Type': 'application/json'
