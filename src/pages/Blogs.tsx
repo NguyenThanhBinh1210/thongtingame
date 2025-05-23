@@ -7,6 +7,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import debounce from 'lodash/debounce'
 import { blogApi } from '~/apis/blog.api'
+import { commentApi } from '~/apis/comment.api'
 
 // Thêm interface cho Tour
 interface Tour {
@@ -114,6 +115,24 @@ const Blogs = () => {
       toast.error('Có lỗi xảy ra')
     }
   })
+
+  const mutationComments = useMutation({
+    mutationFn: (id: string) => {
+      return commentApi.getCommentsChampion(id)
+    },
+    onSuccess: (data) => {
+      console.log(data.data.data.comments);
+      navigate(`/blogs/comments`, {
+        state: {
+          comments: data.data.data.comments
+        }
+      })
+    },
+    onError: () => {
+      toast.error('Có lỗi xảy ra')
+    }
+  })
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString)
     const options: Intl.DateTimeFormatOptions = {
@@ -201,6 +220,19 @@ const Blogs = () => {
                 </TableCell>
                 <TableCell>
                   <div className=' uppercase flex gap-x-2 items-center'>
+                    <Button
+                      onClick={() => {
+                        mutationComments.mutate(item._id)
+                      }}
+                      size='sm'
+                      isIconOnly
+                      aria-label='Like'
+                      color='success'
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-foreground-100">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                      </svg>
+                    </Button>
                     <Button
                       onClick={() => {
                         navigate(`edit/${item.slug}`, {

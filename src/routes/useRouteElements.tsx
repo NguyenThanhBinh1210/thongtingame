@@ -12,6 +12,10 @@ import GameGaming from '~/pages/GameGaming'
 import CreatePCBuild from '~/pages/CreatePCBuild'
 import SearchHistoryMatch from '~/pages/SearchHistoryMatch'
 import Accounts from '~/pages/Accounts'
+import Champions from '~/pages/Champions'
+import Comment from '~/pages/Comment'
+import TFTChampions from '~/pages/TFTChampions'
+import WRChampions from '~/pages/WRChampions'
 
 
 
@@ -83,6 +87,38 @@ const useRouteElements = () => {
           element: (
             <ManagerLayout>
               <Accounts />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/champions',
+          element: (
+            <ManagerLayout>
+              <Champions />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/tft-champions',
+          element: (
+            <ManagerLayout>
+              <TFTChampions />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/wr-champions',
+          element: (
+            <ManagerLayout>
+              <WRChampions />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/:any/comments',
+          element: (
+            <ManagerLayout>
+              <Comment />
             </ManagerLayout>
           )
         },
