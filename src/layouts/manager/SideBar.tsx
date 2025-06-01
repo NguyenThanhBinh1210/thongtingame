@@ -25,7 +25,6 @@ const SideBar = memo(({ isShow }: { isShow: boolean }) => {
   useEffect(() => {
     localStorage.setItem('openAccordions', JSON.stringify(Array.from(openAccordions)))
   }, [openAccordions])
-  console.log(profile)
   return (
     <div
       style={{ zIndex: 21 }}

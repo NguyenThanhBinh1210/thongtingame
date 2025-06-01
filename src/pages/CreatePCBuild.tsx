@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react'
 import '~/styles/index.css'
-import { Input, Button } from '@nextui-org/react'
+import { Input, Button, Select, SelectItem } from '@nextui-org/react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -20,8 +20,16 @@ const CreatePCBuild = () => {
   const navigate = useNavigate()
   const editorRef = useRef<any>(null)
   const [images, setImages] = useState<string[]>(blog ? [blog?.imageUrl] : [])
-
-
+  const languages = [
+    {
+      code: 'vi',
+      name: 'Tiếng Việt'
+    },
+    {
+      code: 'en',
+      name: 'Tiếng Anh'
+    }
+  ]
 
   // Tạo schema động dựa vào việc có đang chỉnh sửa tour hay không
   const createTourSchema = z.object({
@@ -29,6 +37,7 @@ const CreatePCBuild = () => {
     tags: z.string().min(1, 'Vui lòng nhập ít nhất 1 chủ đề'),
     name: z.string().min(1, 'Vui lòng nhập tiêu đề'),
     description: z.string().min(1, 'Vui lòng nhập mô tả'),
+    lang: z.string().min(1, 'Vui lòng chọn ngôn ngữ'),
   })
 
   type FormData = z.infer<typeof createTourSchema>
@@ -45,6 +54,7 @@ const CreatePCBuild = () => {
       content: blog ? (Array.isArray(blog.content) ? blog.content[0] : blog.content) : '',
       tags: blog ? blog.tags.join(',') : ' ',
       description: blog ? blog.description : '',
+      lang: blog ? blog?.lang : '',
     }
   })
 
@@ -87,9 +97,9 @@ const CreatePCBuild = () => {
       content: data.content,
       isPublic: true,
       tags: data.tags.split(',').map(tag => tag.trim()),
-
+      lang: data.lang
     }
-
+    console.log(blogData)
     if (blog) {
       editTourMutation.mutate(blogData)
     } else {
@@ -196,7 +206,28 @@ const CreatePCBuild = () => {
         />
         {errors.tags && <p className='text-red-500 text-sm '>{errors.tags.message}</p>}
 
-
+        <Controller
+          name='lang'
+          control={control}
+          render={({ field }) => (
+            <Select
+              label='Ngôn ngữ'
+              selectedKeys={field.value ? [field.value] : []}
+              onSelectionChange={(keys) => {
+                const selectedKey = Array.from(keys)[0]?.toString()
+                field.onChange(selectedKey)
+              }}
+              errorMessage={errors.lang?.message}
+            >
+              {languages.map((language: any) => (
+                <SelectItem key={language.code} value={language.code}>
+                  {language.name}
+                </SelectItem>
+              ))}
+            </Select>
+          )}
+        />
+        {errors.lang && <p className='text-red-500 text-sm '>{errors.lang.message}</p>}
         <Controller
           name='content'
           control={control}

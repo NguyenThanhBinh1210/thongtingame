@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react'
 import '~/styles/index.css'
-import { Input, Button } from '@nextui-org/react'
+import { Input, Button, Select, SelectItem } from '@nextui-org/react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -21,14 +21,13 @@ const AddBlog = () => {
   const editorRef = useRef<any>(null)
   const [images, setImages] = useState<string[]>(blog ? [blog?.imageUrl] : [])
 
-
-
   // Tạo schema động dựa vào việc có đang chỉnh sửa tour hay không
   const createTourSchema = z.object({
     title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
     content: z.string().min(1, 'Vui lòng nhập nội dung'),
     summary: z.string().min(1, 'Vui lòng nhập mô tả'),
-    tags: z.string().min(1, 'Vui lòng nhập ít nhất 1 chủ đề')
+    tags: z.string().min(1, 'Vui lòng nhập ít nhất 1 chủ đề'),
+    lang: z.string().min(1, 'Vui lòng nhập ngôn ngữ')
   })
 
   type FormData = z.infer<typeof createTourSchema>
@@ -45,8 +44,21 @@ const AddBlog = () => {
       content: blog ? (Array.isArray(blog.content) ? blog.content[0] : blog.content) : '',
       tags: blog ? blog.tags.join(',') : ' ',
       summary: blog ? blog.summary : ' ',
+      lang: blog ? blog.lang : ''
     }
   })
+  const languages = [
+    {
+      code: 'vi',
+      name: 'Tiếng Việt'
+    },
+    {
+      code: 'en',
+      name: 'Tiếng Anh'
+    }
+  ]
+
+
 
   const createBlogMutation = useMutation({
     mutationFn: (data: any) => {
@@ -87,7 +99,8 @@ const AddBlog = () => {
       content: data.content,
       isPublished: true,
       description: data.summary,
-      tags: data.tags.split(',').map(tag => tag.trim()),
+      tags: data.tags.split(',').map((tag) => tag.trim()),
+      lang: data.lang
     }
 
     console.log('Blog data to submit:', blogData)
@@ -197,6 +210,28 @@ const AddBlog = () => {
           render={({ field }) => <Input {...field} label='Chủ đề' errorMessage={errors.tags?.message} />}
         />
         {errors.tags && <p className='text-red-500 text-sm '>{errors.tags.message}</p>}
+        <Controller
+          name='lang'
+          control={control}
+          render={({ field }) => (
+            <Select
+              label='Ngôn ngữ'
+              selectedKeys={field.value ? [field.value] : []}
+              onSelectionChange={(keys) => {
+                const selectedKey = Array.from(keys)[0]?.toString()
+                field.onChange(selectedKey)
+              }}
+              errorMessage={errors.lang?.message}
+            >
+              {languages.map((language: any) => (
+                <SelectItem key={language.code} value={language.code}>
+                  {language.name}
+                </SelectItem>
+              ))}
+            </Select>
+          )}
+        />
+        {errors.lang && <p className='text-red-500 text-sm '>{errors.lang.message}</p>}
 
         <Controller
           name='content'

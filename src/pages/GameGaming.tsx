@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Pagination, Input, Chip, } from '@nextui-org/react'
+import { Button, Pagination, Input, Chip, Select, SelectItem, } from '@nextui-org/react'
 import { useCallback, useMemo, useState } from 'react'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -27,13 +27,24 @@ export interface Language {
   code: string;
   name: string;
 }
+const languages = [
 
+  {
+    code: 'vi',
+    name: 'Tiếng Việt'
+  },
+  {
+    code: 'en',
+    name: 'Tiếng Anh'
+  }
+]
 const GameGaming = () => {
   const [blogs, setBlogs] = useState<Tour[]>([])
-  console.log(blogs);
+  console.log(blogs)
   const navigate = useNavigate()
   const [rowsPerPage, setRowsPerPage] = useState<number>(10)
   const [page, setPage] = useState<number>(1)
+  const [lang, setLang] = useState<string>('vi')
   // const pages = Math.ceil(blogs?.length / rowsPerPage)
   const onRowsPerPageChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
     setRowsPerPage(Number(e.target.value))
@@ -92,7 +103,7 @@ const GameGaming = () => {
 
   // Update blogs query to include language
   useQuery({
-    queryKey: ['pc-build'],
+    queryKey: ['pc-build', lang],
     queryFn: async () => {
       const response = await pcApi.getPCBuild({})
       if (response.data.data) {
@@ -100,7 +111,17 @@ const GameGaming = () => {
       }
     }
   })
-
+  const langMutation = useMutation({
+    mutationFn: (lang: string) => {
+      return pcApi.getPCBuild({ lang })
+    },
+    onSuccess: (data) => {
+      setBlogs(data.data.data.builds)
+    },
+    onError: () => {
+      toast.error('Có lỗi xảy ra')
+    }
+  })
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
@@ -108,7 +129,7 @@ const GameGaming = () => {
       return pcApi.deletePC(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['pc-build'] })
+      queryClient.invalidateQueries({ queryKey: ['pc-build', lang] })
       toast.success('Xoá PC build thành công!')
     },
     onError: () => {
@@ -148,15 +169,36 @@ const GameGaming = () => {
   return (
     <div>
       <div className='flex justify-between items-center mb-4'>
-        <Link to='/gameming/create'>
-          <Button size='sm' color='primary'>
-            Tạo PC build
-          </Button>
-        </Link>
+        <div className='flex gap-4 items-center'>
+          <Link to='/gameming/create'>
+            <Button size='sm' color='primary'>
+              Tạo PC build
+            </Button>
+          </Link>
+          <Select
+            className='w-[150px]'
+            label=''
+            size='sm'
+            selectedKeys={lang ? [lang] : []}
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0]?.toString()
+              setLang(selectedKey)
+              langMutation.mutate(selectedKey)
+
+            }}
+          >
+            {languages.map((language: any) => (
+              <SelectItem key={language.code} value={language.code}>
+                {language.name}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
         {/* <ButtonGroup color='primary' size='sm'>
           <Button disabled className='disabled:bg-gray-300'>Của tôi</Button>
           <Button disabled className='disabled:bg-gray-300'>Tất cả</Button>
         </ButtonGroup> */}
+
         <div className='flex gap-4 items-center'>
 
 

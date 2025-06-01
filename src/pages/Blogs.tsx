@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Pagination, Input, Chip, } from '@nextui-org/react'
+import { Button, Pagination, Input, Chip, Select, SelectItem, } from '@nextui-org/react'
 import { useCallback, useMemo, useState } from 'react'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -20,13 +20,25 @@ interface Tour {
   summary?: string
   createdAt: string
 }
+const languages = [
 
+  {
+    code: 'vi',
+    name: 'Tiếng Việt'
+  },
+  {
+    code: 'en',
+    name: 'Tiếng Anh'
+  }
+]
 // Add Language interface
 
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState<Tour[]>([])
   console.log(blogs);
+  const [lang, setLang] = useState<string>('vi')
+
   const navigate = useNavigate()
   const [rowsPerPage, setRowsPerPage] = useState<number>(10)
   const [page, setPage] = useState<number>(1)
@@ -91,7 +103,7 @@ const Blogs = () => {
 
   // Update blogs query to include language
   useQuery({
-    queryKey: ['blogs'],
+    queryKey: ['blogs', lang],
     queryFn: async () => {
       const response = await blogApi.getBlogs({})
       if (response.data.data) {
@@ -100,7 +112,17 @@ const Blogs = () => {
 
     }
   })
-
+  const langMutation = useMutation({
+    mutationFn: (lang: string) => {
+      return blogApi.getBlogs({ lang })
+    },
+    onSuccess: (data) => {
+      setBlogs(data.data.data.articles)
+    },
+    onError: () => {
+      toast.error('Có lỗi xảy ra')
+    }
+  })
   const queryClient = useQueryClient()
 
   const mutation = useMutation({
@@ -108,7 +130,7 @@ const Blogs = () => {
       return blogApi.deleteBlog(slug)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      queryClient.invalidateQueries({ queryKey: ['blogs', lang] })
       toast.success('Xoá blog thành công!')
     },
     onError: () => {
@@ -149,12 +171,30 @@ const Blogs = () => {
   return (
     <div>
       <div className='flex justify-between items-center mb-4'>
-        <Link to='/blogs/create'>
-          <Button size='sm' color='primary'>
-            Tạo blog
-          </Button>
-        </Link>
-
+        <div className='flex gap-4 items-center'>
+          <Link to='/blogs/create'>
+            <Button size='sm' color='primary'>
+              Tạo blog
+            </Button>
+          </Link>
+          <Select
+            className='w-[150px]'
+            label=''
+            size='sm'
+            selectedKeys={lang ? [lang] : []}
+            onSelectionChange={(keys) => {
+              const selectedKey = Array.from(keys)[0]?.toString()
+              setLang(selectedKey)
+              langMutation.mutate(selectedKey)
+            }}
+          >
+            {languages.map((language: any) => (
+              <SelectItem key={language.code} value={language.code}>
+                {language.name}
+              </SelectItem>
+            ))}
+          </Select>
+        </div>
         <div className='flex gap-4 items-center'>
 
 
@@ -235,7 +275,7 @@ const Blogs = () => {
                     </Button>
                     <Button
                       onClick={() => {
-                        navigate(`edit/${item.slug}`, {
+                        navigate(`/blogs/edit/${item.slug}`, {
                           state: item
                         })
                       }}

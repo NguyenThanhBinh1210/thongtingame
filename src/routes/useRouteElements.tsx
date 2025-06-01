@@ -16,6 +16,7 @@ import Champions from '~/pages/Champions'
 import Comment from '~/pages/Comment'
 import TFTChampions from '~/pages/TFTChampions'
 import WRChampions from '~/pages/WRChampions'
+import CreateChampion from '~/pages/CreateChampion'
 
 
 
@@ -53,7 +54,7 @@ const useRouteElements = () => {
           index: true,
           element: (
             <ManagerLayout>
-               <Blogs />
+              <Blogs />
             </ManagerLayout>
           )
         },
@@ -95,6 +96,14 @@ const useRouteElements = () => {
           element: (
             <ManagerLayout>
               <Champions />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/champions/create',
+          element: (
+            <ManagerLayout>
+              <CreateChampion />
             </ManagerLayout>
           )
         },
