@@ -36,7 +36,6 @@ const languages = [
 
 const Blogs = () => {
   const [blogs, setBlogs] = useState<Tour[]>([])
-  console.log(blogs);
   const [lang, setLang] = useState<string>('vi')
 
   const navigate = useNavigate()
@@ -103,9 +102,9 @@ const Blogs = () => {
 
   // Update blogs query to include language
   useQuery({
-    queryKey: ['blogs', lang],
+    queryKey: ['blogs'],
     queryFn: async () => {
-      const response = await blogApi.getBlogs({})
+      const response = await blogApi.getBlogs({ lang })
       if (response.data.data) {
         setBlogs(response.data.data.articles)
       }
@@ -121,7 +120,8 @@ const Blogs = () => {
     },
     onError: () => {
       toast.error('Có lỗi xảy ra')
-    }
+    },
+
   })
   const queryClient = useQueryClient()
 
@@ -130,7 +130,7 @@ const Blogs = () => {
       return blogApi.deleteBlog(slug)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['blogs', lang] })
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
       toast.success('Xoá blog thành công!')
     },
     onError: () => {

@@ -19,7 +19,8 @@ function createHttp(): AxiosInstance {
     baseURL: 'https://api.loltips.net/api',
     timeout: 10000,
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache'
     }
   })
 

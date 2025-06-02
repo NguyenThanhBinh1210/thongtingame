@@ -103,9 +103,9 @@ const GameGaming = () => {
 
   // Update blogs query to include language
   useQuery({
-    queryKey: ['pc-build', lang],
+    queryKey: ['pc-build'],
     queryFn: async () => {
-      const response = await pcApi.getPCBuild({})
+      const response = await pcApi.getPCBuild({ lang })
       if (response.data.data) {
         setBlogs(response.data.data.builds)
       }
@@ -129,7 +129,7 @@ const GameGaming = () => {
       return pcApi.deletePC(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['pc-build', lang] })
+      queryClient.invalidateQueries({ queryKey: ['pc-build'] })
       toast.success('Xoá PC build thành công!')
     },
     onError: () => {
