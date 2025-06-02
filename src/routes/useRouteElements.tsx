@@ -108,6 +108,14 @@ const useRouteElements = () => {
           )
         },
         {
+          path: '/champions/edit/:slug',
+          element: (
+            <ManagerLayout>
+              <CreateChampion />
+            </ManagerLayout>
+          )
+        },
+        {
           path: '/tft-champions',
           element: (
             <ManagerLayout>

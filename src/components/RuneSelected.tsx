@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 interface RuneSelectorProps {
   runeData: any[]
   onChange?: (data: any) => void
+  defaultValues?: any[]
 }
 const statShardSlots = [
   ['Adaptive Force', 'Attack Speed', 'Ability Haste'],
@@ -19,13 +20,27 @@ const statShardMap: Record<string, string> = {
   'Magic Resist': 'Kháng Phép'
 }
 
-const RuneSelector = ({ runeData, onChange }: RuneSelectorProps) => {
+const RuneSelector = ({ runeData, onChange, defaultValues }: RuneSelectorProps) => {
+  console.log(defaultValues)
   const [primary, setPrimary] = useState<any>(null)
   const [secondary, setSecondary] = useState<any>(null)
   const [selectedRunes, setSelectedRunes] = useState<any[]>([])
+  // console.log(selectedRunes)
   const [secondaryRunes, setSecondaryRunes] = useState<any[]>([])
   const [statShards, setStatShards] = useState<(string | null)[]>([null, null, null])
-
+  console.log(statShards)
+  useEffect(() => {
+    if (defaultValues && defaultValues.length > 0) {
+      const primaryTree = runeData.find((tree) => tree.name === defaultValues[0].primaryTree.name)
+      const secondaryTree = runeData.find((tree) => tree.name === defaultValues[0].secondaryTree.name)
+      setPrimary(primaryTree)
+      setSecondary(secondaryTree)
+      const primaryRunes = runeData.map((tree) => tree.slots).flat().map((slot) => slot.runes).flat().filter((rune) => defaultValues[0].primaryTree.runes.includes(rune.name))
+      const secondaryRunes = runeData.map((tree) => tree.slots).flat().map((slot) => slot.runes).flat().filter((rune) => defaultValues[0].secondaryTree.runes.includes(rune.name))
+      setSelectedRunes(primaryRunes)
+      setSecondaryRunes(secondaryRunes)
+    }
+  }, [defaultValues])
   const handlePrimarySelect = (tree: any) => {
     setPrimary(tree)
     setSelectedRunes([])

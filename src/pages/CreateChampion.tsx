@@ -37,10 +37,10 @@ const CreateChampion = () => {
   const [strongAgainstSelected, setStrongAgainstSelected] = useState<any[]>([])
   const [runesSelected, setRunesSelected] = useState<any[]>([])
   const [itemsSelected, setItemsSelected] = useState<any[]>([])
-  console.log(itemsSelected)
   const [langSelected, setLangSelected] = useState<string>('vi')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [champions, setChampions] = useState<any>([])
+
   const [skill, setSkill] = useState<{
     name: string
     description: string
@@ -456,7 +456,7 @@ const CreateChampion = () => {
             render={({ field }) => (
               <Select
                 label='Ngôn ngữ'
-                selectedKeys={field.value ? [field.value] : []}
+                selectedKeys={field.value ? [field.value] : ['vi']}
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0]?.toString()
                   field.onChange(selectedKey)
@@ -494,7 +494,11 @@ const CreateChampion = () => {
               aria-label='Accordion 1'
               title={<div className='text-sm font-medium text-gray-700 mb-2 py-5'>Bảng ngọc đề xuất</div>}
             >
-              <RuneSelector runeData={runes} onChange={(val) => setRunesSelected(val)} />
+              <RuneSelector
+                defaultValues={blog?.recommendedRunes.length > 0 ? blog.recommendedRunes : []}
+                runeData={runes}
+                onChange={(val) => setRunesSelected(val)}
+              />
             </AccordionItem>
             <AccordionItem
               key='2'
