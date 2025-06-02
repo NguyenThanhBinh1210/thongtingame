@@ -222,10 +222,10 @@
   dependencies:
     ckeditor5 "^27.1.0"
 
-"@ckeditor/ckeditor5-react@^3.0.3":
-  version "3.0.3"
-  resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-react/-/ckeditor5-react-3.0.3.tgz"
-  integrity sha512-Zaazd9Brg64v1Q2qQNtbfryWeVLzXWlNbswLsOYwNgvHlxroa8+F7ZE33M2O8zxcL6sQHZ1vCNkQOPRUBG8pqA==
+"@ckeditor/ckeditor5-react@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.npmjs.org/@ckeditor/ckeditor5-react/-/ckeditor5-react-5.0.0.tgz"
+  integrity sha512-5E/Npua1goikPdbx6GpeFNwOem+lslgYs2r3CycXcbxa3/d9C6ZBVpWppLk3rlRcUKTOXvGNkjfqRoGk9QhATA==
   dependencies:
     prop-types "^15.7.2"
 
@@ -302,82 +302,6 @@
     "@ckeditor/ckeditor5-ui" "^27.1.0"
     "@ckeditor/ckeditor5-utils" "^27.1.0"
     lodash-es "^4.17.15"
-
-"@ephox/agar@^8.0.0", "@ephox/agar@^8.0.1":
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/@ephox/agar/-/agar-8.0.1.tgz#6772ed7abd90adee5b08bc6f8baf0cb4f22b8d1c"
-  integrity sha512-2LR/u0oos9GadRoLFDVE6NRDV8Tl9+DYQyouVYn0+7afAYdouyw+nXaoTVG5nnvMG+ofsmldKOC82nJWu0a4kQ==
-  dependencies:
-    "@ephox/bedrock-client" "11 || 12 || 13"
-    "@ephox/bedrock-common" "11 || 12 || 13"
-    "@ephox/jax" "^7.0.10"
-    "@ephox/sand" "^6.0.10"
-    "@ephox/sugar" "^9.3.1"
-    "@types/sizzle" "^2.3.3"
-    fast-check "^2.0.0"
-    sizzle "^2.3.4"
-
-"@ephox/bedrock-client@11 || 12 || 13":
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/@ephox/bedrock-client/-/bedrock-client-13.0.0.tgz#e9af3747257eebf7026f2b8177f2fd15bffb005f"
-  integrity sha512-Zah4+o7wFmYO6x3AHiQ1fIYdWIKMAlgszFqKp+JYrmkmqQG9h25wk2izPvTvJ+UGrORU6W90PrDWuksE1XhcUw==
-  dependencies:
-    "@ephox/bedrock-common" "^13.0.0"
-    "@ephox/dispute" "^1.0.3"
-
-"@ephox/bedrock-common@11 || 12 || 13", "@ephox/bedrock-common@^13.0.0":
-  version "13.0.0"
-  resolved "https://registry.yarnpkg.com/@ephox/bedrock-common/-/bedrock-common-13.0.0.tgz#e30d1710552de980b265b812dde879ff8875c359"
-  integrity sha512-aJ3gtezZ0duGJAniT/+uWi0fFCJRqNdJjumxhCwOVTc2MSsXcyqn70s6FIlrp/Fw2QuyiEqxgormgrmBUbWNWA==
-  dependencies:
-    diff "^5.0.0"
-
-"@ephox/dispute@^1.0.3":
-  version "1.0.16"
-  resolved "https://registry.yarnpkg.com/@ephox/dispute/-/dispute-1.0.16.tgz#feae65b14651c18326a6ca7fd3f537ee411361b2"
-  integrity sha512-qHy0c+TX4FZx6xI2EBoBqOjGlbtGqQlvK7uWMNCVkfXveJ/dWhjFKfxRR2fsIN/xOYDQ7uJ/GcD+oDpryxl1dA==
-  dependencies:
-    tslib "^2.0.0"
-
-"@ephox/jax@^7.0.10":
-  version "7.0.10"
-  resolved "https://registry.yarnpkg.com/@ephox/jax/-/jax-7.0.10.tgz#af356fd1c4dd98cff4738499d0a7e26c2c567e0a"
-  integrity sha512-iDqR2M45ketsSdfQmrjy8xyqVGPiLUTs/FOYBmwUdbBNYifQx9sT2eKQrOmsVYuH6voZaoiXdA0EK8aqHcKGQg==
-  dependencies:
-    "@ephox/katamari" "^9.1.6"
-
-"@ephox/katamari@^9.1.5", "@ephox/katamari@^9.1.6":
-  version "9.1.6"
-  resolved "https://registry.yarnpkg.com/@ephox/katamari/-/katamari-9.1.6.tgz#a7b6e6bfa4c4ab3f0569ab06298c432c5ef0227f"
-  integrity sha512-7R7hcpiIWaDk4t731ppdr3X/hjLZkHTDjJCEgGgTS3ylddodGKtSMS91tISicYjKQXnB06GT+gJoOk3/McazIg==
-  dependencies:
-    "@ephox/dispute" "^1.0.3"
-
-"@ephox/mcagar@^9.0.0":
-  version "9.0.1"
-  resolved "https://registry.yarnpkg.com/@ephox/mcagar/-/mcagar-9.0.1.tgz#d740d02628063e8df86ca8cdd8aa307654b1c69b"
-  integrity sha512-iNMP8mkz8AtgiRceU4TAnstQje3RG8yxM/QoWKkriCeh6n5fe1sSfexFRVW3fwZ0bUrjTlyawSqoH0yhESqJjQ==
-  dependencies:
-    "@ephox/agar" "^8.0.1"
-    "@ephox/katamari" "^9.1.6"
-    "@ephox/sand" "^6.0.10"
-    "@ephox/sugar" "^9.3.1"
-    fast-check "^2.0.0"
-
-"@ephox/sand@^6.0.10":
-  version "6.0.10"
-  resolved "https://registry.yarnpkg.com/@ephox/sand/-/sand-6.0.10.tgz#1bd3e03ce339ab282fa3ac03591badc13f7d69b1"
-  integrity sha512-q/2Xcjl1O5c9/HHxQiEKGZkGsC68WUjVP5ciDNKqrZd1s1BhA3VWbaubQxxBRt3SwKyBCukfS5gL53qkqTfbkg==
-  dependencies:
-    "@ephox/katamari" "^9.1.6"
-
-"@ephox/sugar@^9.3.0", "@ephox/sugar@^9.3.1":
-  version "9.3.1"
-  resolved "https://registry.yarnpkg.com/@ephox/sugar/-/sugar-9.3.1.tgz#082dbe885d41e657eff7ef6275d648f3dff88334"
-  integrity sha512-NQMqDN0zC+IZGuhBuz/7RxncfJsmTBhCHgaqkHOJ5d1E0CIL9afIizBYQ0JSHS3osAb9woGGtwPobjCx3/Srpw==
-  dependencies:
-    "@ephox/katamari" "^9.1.6"
-    "@ephox/sand" "^6.0.10"
 
 "@esbuild/aix-ppc64@0.19.11":
   version "0.19.11"
@@ -3157,20 +3081,10 @@
   dependencies:
     "@tanstack/query-core" "5.59.16"
 
-"@tinymce/miniature@^6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@tinymce/miniature/-/miniature-6.0.0.tgz#d11ca91292fa614926faf399166898874baedd92"
-  integrity sha512-bLpaTTgbyMHP3V8bucSxvCTVTUjRRk05zDgnlD5Hj2eo6hEyHT1FCqpuhdVLHx9mbCydrlAIhhsY8Ex6Hp8Qqg==
-  dependencies:
-    "@ephox/agar" "^8.0.0"
-    "@ephox/katamari" "^9.1.5"
-    "@ephox/mcagar" "^9.0.0"
-    "@ephox/sugar" "^9.3.0"
-
-"@tinymce/tinymce-react@^6.0.0":
-  version "6.2.0"
-  resolved "https://registry.npmjs.org/@tinymce/tinymce-react/-/tinymce-react-6.2.0.tgz"
-  integrity sha512-uJtoZPZ89YoBlxPUpmyJXGU1VHzISwMiwDlr1mkYe9ESUfpH2DROLFTqk5GvB+SoFjmXsqyiTce4FBuv9T4bUQ==
+"@tinymce/tinymce-react@^7.0.0-rc.20250322095423848.shaa345338":
+  version "7.0.0-rc.20250322095423848.shaa345338"
+  resolved "https://registry.yarnpkg.com/@tinymce/tinymce-react/-/tinymce-react-7.0.0-rc.20250322095423848.shaa345338.tgz#ed5fe5d6e344c8eb4e003cb00637a2404060f356"
+  integrity sha512-awxTgch1woxHm3VZotXChPR+xCf0NtrZb04m/II9rsBSmMp2xLaKZWwtSC1MNQWW1MNc7ToJAB60ShCekqSW/A==
   dependencies:
     prop-types "^15.6.2"
 
@@ -3254,11 +3168,6 @@
   version "7.5.6"
   resolved "https://registry.npmjs.org/@types/semver/-/semver-7.5.6.tgz"
   integrity sha512-dn1l8LaMea/IjDoHNd9J52uBbInB796CDffS6VdIxvqYCPSG0V0DzHp76GpaWnlhg88uYyPbXCDIowa86ybd5A==
-
-"@types/sizzle@^2.3.3":
-  version "2.3.9"
-  resolved "https://registry.yarnpkg.com/@types/sizzle/-/sizzle-2.3.9.tgz#d4597dbd4618264c414d7429363e3f50acb66ea2"
-  integrity sha512-xzLEyKB50yqCUPUJkIsrVvoWNfFUbIZI+RspLWt8u+tIW/BetMBZtgV2LY/2o+tYH8dRvQ+eoPf3NdhQCcLE2w==
 
 "@typescript-eslint/eslint-plugin@^6.14.0":
   version "6.18.0"
@@ -3551,14 +3460,9 @@ camelcase-css@^2.0.1:
   resolved "https://registry.npmjs.org/camelcase-css/-/camelcase-css-2.0.1.tgz"
   integrity sha512-QOSvevhslijgYwRx6Rv7zKdMF8lbRmx+uQGx2+vDc+KI/eBnsy9kit5aj23AgGu3pa4t9AgwbnXWqS+iOY+2aA==
 
-caniuse-lite@^1.0.30001538, caniuse-lite@^1.0.30001565:
-  version "1.0.30001576"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001576.tgz"
-  integrity sha512-ff5BdakGe2P3SQsMsiqmt1Lc8221NR1VzHj5jXN5vBny9A6fpze94HiVV/n7XRosOlsShJcvMv5mdnpjOGCEgg==
-
-caniuse-lite@^1.0.30001720:
+caniuse-lite@^1.0.30001538, caniuse-lite@^1.0.30001565, caniuse-lite@^1.0.30001720:
   version "1.0.30001720"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001720.tgz#c138cb6026d362be9d8d7b0e4bcd0183a850edfd"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001720.tgz"
   integrity sha512-Ec/2yV2nNPwb4DnTANEV99ZWwm3ZWfdlfkQbWSDDt+PsXEVYwlhPH8tdMaPunYTKKmz7AnHi2oNEi1GcmKCD8g==
 
 chalk@^4.0.0:
@@ -3779,11 +3683,6 @@ didyoumean@^1.2.2:
   version "1.2.2"
   resolved "https://registry.npmjs.org/didyoumean/-/didyoumean-1.2.2.tgz"
   integrity sha512-gxtyfqMg7GKyhQmb056K7M3xszy/myH8w+B4RT+QXBQsvAOdc3XymqDDPHx1BgPgsdAA5SIifona89YtRATDzw==
-
-diff@^5.0.0:
-  version "5.2.0"
-  resolved "https://registry.yarnpkg.com/diff/-/diff-5.2.0.tgz#26ded047cd1179b78b9537d5ef725503ce1ae531"
-  integrity sha512-uIFDxqpRZGZ6ThOk84hEfqWoHx2devRFvpTZcTHur85vImfaxUbTW9Ryh4CpCuDnToOP1CEtXKIgytHBPVff5A==
 
 dir-glob@^3.0.1:
   version "3.0.1"
@@ -4045,13 +3944,6 @@ extend@^3.0.2:
   version "3.0.2"
   resolved "https://registry.npmjs.org/extend/-/extend-3.0.2.tgz"
   integrity sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==
-
-fast-check@^2.0.0:
-  version "2.25.0"
-  resolved "https://registry.yarnpkg.com/fast-check/-/fast-check-2.25.0.tgz#5146601851bf3be0953bd17eb2b7d547936c6561"
-  integrity sha512-wRUT2KD2lAmT75WNIJIHECawoUUMHM0I5jrlLXGtGeqmPL8jl/EldUDjY1VCp6fDY8yflyfUeIOsOBrIbIiArg==
-  dependencies:
-    pure-rand "^5.0.1"
 
 fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   version "3.1.3"
@@ -4957,11 +4849,6 @@ punycode@^2.1.0:
   resolved "https://registry.npmjs.org/punycode/-/punycode-2.3.1.tgz"
   integrity sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==
 
-pure-rand@^5.0.1:
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/pure-rand/-/pure-rand-5.0.5.tgz#bda2a7f6a1fc0f284d78d78ca5902f26f2ad35cf"
-  integrity sha512-BwQpbqxSCBJVpamI6ydzcKqyFmnd5msMWUGvzXLm1aXvusbbgkbOto/EUPM00hjveJEaJtdbhUjKSzWRhQVkaw==
-
 queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
@@ -5306,11 +5193,6 @@ simple-swizzle@^0.2.2:
   dependencies:
     is-arrayish "^0.3.1"
 
-sizzle@^2.3.4:
-  version "2.3.10"
-  resolved "https://registry.yarnpkg.com/sizzle/-/sizzle-2.3.10.tgz#535bd98dec4a598731ad169fd00922dd27aa5198"
-  integrity sha512-kPGev+SiByuzi/YPDTqCwdKLWCaN9+14ve86yH0gP6Efue04xjLYWJrcLC6y1buFyIVXkwHNXPsOTEd1MYVPbQ==
-
 slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz"
@@ -5491,7 +5373,7 @@ thenify-all@^1.0.0:
 
 tinymce@^7.9.1:
   version "7.9.1"
-  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-7.9.1.tgz#1b18bad9cb7a3b4b12e3e5a7f29fc7daad0713d7"
+  resolved "https://registry.npmjs.org/tinymce/-/tinymce-7.9.1.tgz"
   integrity sha512-zaOHwmiP1EqTeLRXAvVriDb00JYnfEjWGPdKEuac7MiZJ5aiDMZ4Unc98Gmajn+PBljOmO1GKV6G0KwWn3+k8A==
 
 to-regex-range@^5.0.1:
