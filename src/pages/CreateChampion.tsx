@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '~/styles/index.css'
 import {
   Input,
@@ -11,7 +11,9 @@ import {
   ModalFooter,
   useDisclosure,
   Select,
-  SelectItem
+  SelectItem,
+  Accordion,
+  AccordionItem
 } from '@nextui-org/react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
@@ -20,9 +22,10 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { useLocation, useNavigate } from 'react-router-dom'
-import { blogApi } from '~/apis/blog.api'
 import MultiSelectChampion from '~/components/Autocompleted'
 import { championApi } from '~/apis/champion.api'
+import RuneSelector from '~/components/RuneSelected'
+import ItemBuildComponent from '~/components/ItemSelected'
 
 const CreateChampion = () => {
   const location = useLocation()
@@ -30,9 +33,14 @@ const CreateChampion = () => {
   const navigate = useNavigate()
   const [imageUrl, setImageUrl] = useState<string[]>(blog ? [blog?.imageUrl] : [])
   const [splashImageUrl, setSplashImageUrl] = useState<string[]>(blog ? [blog?.splashImageUrl] : [])
+  const [countersSelected, setCountersSelected] = useState<any[]>([])
+  const [strongAgainstSelected, setStrongAgainstSelected] = useState<any[]>([])
+  const [runesSelected, setRunesSelected] = useState<any[]>([])
+  const [itemsSelected, setItemsSelected] = useState<any[]>([])
+  console.log(itemsSelected)
+  const [langSelected, setLangSelected] = useState<string>('vi')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [champions, setChampions] = useState<any>([])
-
   const [skill, setSkill] = useState<{
     name: string
     description: string
@@ -109,8 +117,6 @@ const CreateChampion = () => {
     tags: z.string().min(1, 'Vui lòng nhập ít nhất 1 chủ đề'),
     counters: z.string().min(1, 'Vui lòng nhập ít nhất 1 tướng khắc chế'),
     strongAgainst: z.string().min(1, 'Vui lòng nhập ít nhất 1 tướng mạnh hơn khi đối đầu'),
-    recommendedRunes: z.string().min(1, 'Vui lòng nhập ít nhất 1 ngọc bổ trợ'),
-    recommendedItems: z.string().min(1, 'Vui lòng nhập ít nhất 1 vật phẩm khuyến nghị'),
     lang: z.string().min(1, 'Vui lòng chọn ngôn ngữ')
   })
 
@@ -129,8 +135,6 @@ const CreateChampion = () => {
       tags: blog ? blog.tags.join(',') : ' ',
       counters: blog ? blog.counters.join(',') : ' ',
       strongAgainst: blog ? blog.strongAgainst.join(',') : ' ',
-      recommendedRunes: blog ? blog.recommendedRunes.join(',') : ' ',
-      recommendedItems: blog ? blog.recommendedItems.join(',') : ' ',
       lang: blog ? blog.lang : ''
     }
   })
@@ -145,7 +149,6 @@ const CreateChampion = () => {
     }
   ]
 
-
   useQuery({
     queryKey: ['champions'],
     queryFn: async () => {
@@ -155,19 +158,35 @@ const CreateChampion = () => {
       }
     }
   })
+  const [runes, setRunes] = useState<any[]>([]) // Thêm state để lưu trữ danh sách ngọc
+  const fetchRunes = async (lang: string) => {
+    try {
+      const response = await fetch(
+        `https://ddragon.leagueoflegends.com/cdn/15.9.1/data/${lang === 'vi' ? 'vi_VN' : 'en_US'}/runesReforged.json`
+      )
+      const data = await response.json()
+      setRunes(data) // Lưu trữ danh sách ngọc vào state
+    } catch (error) {
+      console.error('Error fetching runes:', error)
+    }
+  }
+
+  useEffect(() => {
+    fetchRunes('vi')
+  }, [])
 
   const createBlogMutation = useMutation({
     mutationFn: (data: any) => {
-      return blogApi.createBlog(data)
+      return championApi.postChampion(data)
     },
     onSuccess: () => {
-      toast.success('Tạo blog thành công!')
+      toast.success('Tạo tướng thành công!')
       reset()
       setImageUrl([])
       setSplashImageUrl([])
     },
     onError: (err) => {
-      toast.error('Có lỗi xảy ra khi tạo blog!')
+      toast.error('Có lỗi xảy ra khi tạo tướng!')
       console.log(err)
     }
   })
@@ -175,11 +194,11 @@ const CreateChampion = () => {
   const editTourMutation = useMutation({
     mutationFn: (data: any) => {
       const slug = blog.slug
-      return blogApi.editBlog(slug, data)
+      return championApi.editChampion(slug, data)
     },
     onSuccess: () => {
       toast.success('Sửa thành công!')
-      navigate('/blogs')
+      navigate('/champions')
     },
     onError: (error) => {
       console.error('Edit error:', error)
@@ -203,19 +222,15 @@ const CreateChampion = () => {
         imageUrl: skill.image
       })),
       tags: data.tags.split(',').map((tag) => tag.trim()),
-      counters: data.counters.split(',').map((c) => c.trim()),
-      strongAgainst: data.strongAgainst.split(',').map((c) => c.trim()),
-      recommendedRunes: data.recommendedRunes.split(',').map((c) => c.trim()),
-      recommendedItems: data.recommendedItems.split(',').map((c) => c.trim())
+      counters: countersSelected,
+      strongAgainst: strongAgainstSelected,
+      recommendedRunes: runesSelected,
+      recommendedItems: itemsSelected
     }
-
-    console.log('Blog data to submit:', blogData)
-
+    console.log(blogData)
     if (blog) {
-      console.log('Editing blog with ID:', blog)
       editTourMutation.mutate(blogData)
     } else {
-      console.log('Creating new blog')
       createBlogMutation.mutate(blogData)
     }
   })
@@ -445,6 +460,8 @@ const CreateChampion = () => {
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0]?.toString()
                   field.onChange(selectedKey)
+                  fetchRunes(selectedKey)
+                  setLangSelected(selectedKey)
                 }}
                 errorMessage={errors.lang?.message}
               >
@@ -457,36 +474,36 @@ const CreateChampion = () => {
             )}
           />
           {errors.lang && <p className='text-red-500 text-sm '>{errors.lang.message}</p>}
-          <MultiSelectChampion
-            label='Chọn tướng khắc chế'
-            options={champions}
-            onChange={(val) => console.log('Selected:', val)}
-          />
-          {errors.counters && <p className='text-red-500 text-sm '>{errors.counters?.message}</p>}
-          <Controller
-            name='strongAgainst'
-            control={control}
-            render={({ field }) => (
-              <Input {...field} label='Tướng mạnh hơn khi đối đầu' errorMessage={errors.strongAgainst?.message} />
-            )}
-          />
-          {errors.strongAgainst && <p className='text-red-500 text-sm '>{errors.strongAgainst?.message}</p>}
-          <Controller
-            name='recommendedRunes'
-            control={control}
-            render={({ field }) => (
-              <Input {...field} label='Ngọc bổ trợ' errorMessage={errors.recommendedRunes?.message} />
-            )}
-          />
-          {errors.recommendedRunes && <p className='text-red-500 text-sm '>{errors.recommendedRunes?.message}</p>}
-          <Controller
-            name='recommendedItems'
-            control={control}
-            render={({ field }) => (
-              <Input {...field} label='Vật phẩm khuyến nghị' errorMessage={errors.recommendedItems?.message} />
-            )}
-          />
-          {errors.recommendedItems && <p className='text-red-500 text-sm '>{errors.recommendedItems?.message}</p>}
+          <div className='grid grid-cols-2 gap-4'>
+            <MultiSelectChampion
+              label='Chọn tướng khắc chế'
+              options={champions}
+              defaultValues={blog?.counters.length > 0 ? blog.counters : []}
+              onChange={(val) => setCountersSelected(val)}
+            />
+            <MultiSelectChampion
+              label='Tướng mạnh hơn khi đối đầu'
+              options={champions}
+              defaultValues={blog?.strongAgainst.length > 0 ? blog.strongAgainst : []}
+              onChange={(val) => setStrongAgainstSelected(val)}
+            />
+          </div>
+          <Accordion>
+            <AccordionItem
+              key='1'
+              aria-label='Accordion 1'
+              title={<div className='text-sm font-medium text-gray-700 mb-2 py-5'>Bảng ngọc đề xuất</div>}
+            >
+              <RuneSelector runeData={runes} onChange={(val) => setRunesSelected(val)} />
+            </AccordionItem>
+            <AccordionItem
+              key='2'
+              aria-label='Accordion 2'
+              title={<div className='text-sm font-medium text-gray-700 mb-2 py-5'>Trang bị đề xuất</div>}
+            >
+              <ItemBuildComponent langSelected={langSelected} onChange={(val) => setItemsSelected(val)} />
+            </AccordionItem>
+          </Accordion>
 
           <button type='submit' className='mt-6 w-full bg-blue-500 text-white p-2 rounded-md'>
             Tạo Tướng

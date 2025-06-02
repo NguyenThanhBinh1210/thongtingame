@@ -15,11 +15,12 @@ interface MultiSelectProps {
   placeholder?: string;
   onChange?: (selected: Champion[]) => void;
   label?: string;
+  defaultValues?: Champion[];
 }
 
-const MultiSelectChampion: React.FC<MultiSelectProps> = ({ options, placeholder = 'Chọn...', onChange, label }) => {
+const MultiSelectChampion: React.FC<MultiSelectProps> = ({ options, placeholder = 'Chọn...', onChange, label, defaultValues = [] }) => {
   const [inputValue, setInputValue] = useState('')
-  const [selected, setSelected] = useState<Champion[]>([])
+  const [selected, setSelected] = useState<Champion[]>(defaultValues)
   const [isOpen, setIsOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
 
@@ -54,7 +55,7 @@ const MultiSelectChampion: React.FC<MultiSelectProps> = ({ options, placeholder 
   }, []);
 
   return (
-    <div>
+    <div className='z-[50] relative'>
       <label className='block text-sm font-medium text-gray-700 mb-2'>{label}</label>
       <div className='relative w-full max-w-md' ref={ref}>
         <div
