@@ -7,5 +7,5 @@ export const pcApi = {
   getHistoryMatch: (params: any) => http.get('/pc-build/lol-history', { params }),
   deletePC: (id: string) => http.delete(`/pc-build/builds/${id}`),
   editPC: (id: string, data: any) => http.put(`/pc-build/builds/${id}`, data),
-  getCategories: () => http.get('/categories/level3')
+  getCategories: () => http.get(`/categories/level3?_t=${Date.now()}`)
 }

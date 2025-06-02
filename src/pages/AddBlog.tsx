@@ -240,7 +240,7 @@ const AddBlog = () => {
             <div>
               <label className='block mb-2'>Nội dung</label>
               <Editor
-                apiKey='bhwlny7n0ah66rim6u23wtdzys11lr2gr11mq9p4cbgsp0a6'
+                apiKey='ywl69cdufov43p0iduwnewjh5sl1w99pz6uuess6an747i6k'
                 onInit={(_: any, editor: any) => {
                   editorRef.current = editor
 
