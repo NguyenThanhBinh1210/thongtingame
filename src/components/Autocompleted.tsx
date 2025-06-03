@@ -3,6 +3,7 @@ import { X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Champion {
+  id: string;
   name: string;
   role: string;
   description: string;
@@ -23,11 +24,10 @@ const MultiSelectChampion: React.FC<MultiSelectProps> = ({ options, placeholder 
   const [selected, setSelected] = useState<Champion[]>(defaultValues)
   const [isOpen, setIsOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
-
   const filtered = options.filter(
     (opt) =>
-      !selected.find((sel) => sel.name === opt.name) &&
-      opt.name.toLowerCase().includes(inputValue.toLowerCase())
+      !selected.find((sel) => sel.id === opt.id) &&
+      opt.id.toLowerCase().includes(inputValue.toLowerCase())
   );
 
   const handleSelect = (value: Champion) => {
@@ -38,8 +38,8 @@ const MultiSelectChampion: React.FC<MultiSelectProps> = ({ options, placeholder 
     onChange?.(newSelected);
   };
 
-  const handleRemove = (name: string) => {
-    const newSelected = selected.filter((v) => v.name !== name);
+  const handleRemove = (id: string) => {
+    const newSelected = selected.filter((v) => v.id !== id);
     setSelected(newSelected);
     onChange?.(newSelected);
   };
@@ -64,12 +64,12 @@ const MultiSelectChampion: React.FC<MultiSelectProps> = ({ options, placeholder 
         >
           {selected.map((champion) => (
             <span
-              key={champion.name}
+              key={champion.id}
               className="flex items-center bg-blue-100 text-blue-800 text-sm rounded-full px-3 py-1"
             >
-              {champion.name}
+              {champion.id}
               <button
-                onClick={() => handleRemove(champion.name)}
+                onClick={() => handleRemove(champion.id)}
                 className="ml-2 hover:text-red-500"
                 type="button"
               >
@@ -98,7 +98,7 @@ const MultiSelectChampion: React.FC<MultiSelectProps> = ({ options, placeholder 
             >
               {filtered.map((champion) => (
                 <li
-                  key={champion.name}
+                  key={champion.id}
                   className="p-2 hover:bg-blue-100 cursor-pointer flex items-center gap-2"
                   onClick={() => handleSelect(champion)}
                 >
@@ -106,8 +106,7 @@ const MultiSelectChampion: React.FC<MultiSelectProps> = ({ options, placeholder 
                     <img className='w-10 h-10 rounded-full' src={champion.imageUrl} alt="" />
                   </div>
                   <div>
-                    <div className="font-semibold">{champion.name}</div>
-                    <div className="text-xs text-gray-500 capitalize">{champion.title}</div>
+                    <div className="font-semibold">{champion.id}</div>
                   </div>
                 </li>
               ))}

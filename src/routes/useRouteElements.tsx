@@ -17,6 +17,9 @@ import Comment from '~/pages/Comment'
 import TFTChampions from '~/pages/TFTChampions'
 import WRChampions from '~/pages/WRChampions'
 import CreateChampion from '~/pages/CreateChampion'
+import CreateTFTChampion from '~/pages/CreateTFTChampion'
+import TFTItems from '~/pages/TFTItems'
+import TFTItemCreate from '~/pages/TFTItemCreate'
 
 
 
@@ -120,6 +123,46 @@ const useRouteElements = () => {
           element: (
             <ManagerLayout>
               <TFTChampions />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/tft-champions/create',
+          element: (
+            <ManagerLayout>
+              <CreateTFTChampion />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/tft-items',
+          element: (
+            <ManagerLayout>
+              <TFTItems />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/tft-items/create',
+          element: (
+            <ManagerLayout>
+              <TFTItemCreate />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/tft-items/edit/:slug',
+          element: (
+            <ManagerLayout>
+              <TFTItemCreate />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/tft-champions/edit/:slug',
+          element: (
+            <ManagerLayout>
+              <CreateTFTChampion />
             </ManagerLayout>
           )
         },

@@ -34,13 +34,13 @@ const CreateChampion = () => {
   const [imageUrl, setImageUrl] = useState<string[]>(blog ? [blog?.imageUrl] : [])
   const [splashImageUrl, setSplashImageUrl] = useState<string[]>(blog ? [blog?.splashImageUrl] : [])
   const [countersSelected, setCountersSelected] = useState<any[]>([])
+  console.log(countersSelected)
   const [strongAgainstSelected, setStrongAgainstSelected] = useState<any[]>([])
   const [runesSelected, setRunesSelected] = useState<any[]>([])
   const [itemsSelected, setItemsSelected] = useState<any[]>([])
   const [langSelected, setLangSelected] = useState<string>('vi')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [champions, setChampions] = useState<any>([])
-
   const [skill, setSkill] = useState<{
     name: string
     description: string
@@ -133,8 +133,6 @@ const CreateChampion = () => {
       title: blog ? blog.title : '',
       name: blog ? blog.name : '',
       tags: blog ? blog.tags.join(',') : ' ',
-      counters: blog ? blog.counters.join(',') : ' ',
-      strongAgainst: blog ? blog.strongAgainst.join(',') : ' ',
       lang: blog ? blog.lang : ''
     }
   })
@@ -150,7 +148,7 @@ const CreateChampion = () => {
   ]
 
   useQuery({
-    queryKey: ['champions'],
+    queryKey: ['champions-all'],
     queryFn: async () => {
       const response = await championApi.getChampions({})
       if (response.data.data) {
@@ -478,13 +476,13 @@ const CreateChampion = () => {
             <MultiSelectChampion
               label='Chọn tướng khắc chế'
               options={champions}
-              defaultValues={blog?.counters.length > 0 ? blog.counters : []}
+              defaultValues={blog?.counters?.length > 0 ? blog.counters : []}
               onChange={(val) => setCountersSelected(val)}
             />
             <MultiSelectChampion
               label='Tướng mạnh hơn khi đối đầu'
               options={champions}
-              defaultValues={blog?.strongAgainst.length > 0 ? blog.strongAgainst : []}
+              defaultValues={blog?.strongAgainst?.length > 0 ? blog.strongAgainst : []}
               onChange={(val) => setStrongAgainstSelected(val)}
             />
           </div>

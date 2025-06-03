@@ -102,8 +102,16 @@ export const menuCMS = [
         path: '/tft-champions'
       },
       {
+        title: 'Danh sách trang bị TFT',
+        path: '/tft-items'
+      },
+      {
         title: 'Tạo tướng',
         path: '/tft-champions/create'
+      },
+      {
+        title: 'Tạo trang bị',
+        path: '/tft-items/create'
       },
     ]
   },

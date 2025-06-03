@@ -1,25 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button, Pagination, Input, Chip, SelectItem, Select, } from '@nextui-org/react'
+import { Button, Pagination, Input, Select, SelectItem, } from '@nextui-org/react'
 import { useCallback, useMemo, useState } from 'react'
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from '@nextui-org/react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import debounce from 'lodash/debounce'
-import { championApi } from '~/apis/champion.api'
+import { blogApi } from '~/apis/blog.api'
 import { commentApi } from '~/apis/comment.api'
-import { Link, useNavigate } from 'react-router-dom'
+import { itemApi } from '~/apis/item.api'
 
 // Thêm interface cho Tour
 interface Tour {
   _id: string
   name: string
+  slug: string
   imageUrl: string
-  title: string
+  content: string
   tags: string[]
+  summary?: string
+  createdAt: string
 }
-
-// Add Language interface
-
 const languages = [
 
   {
@@ -31,9 +32,14 @@ const languages = [
     name: 'Tiếng Anh'
   }
 ]
-const Champions = () => {
-  const [champions, setChampions] = useState<Tour[]>([])
+// Add Language interface
+
+
+const TFTItems = () => {
+  const [items, setItems] = useState<Tour[]>([])
   const [lang, setLang] = useState<string>('vi')
+
+  const navigate = useNavigate()
   const [rowsPerPage, setRowsPerPage] = useState<number>(10)
   const [page, setPage] = useState<number>(1)
   // const pages = Math.ceil(blogs?.length / rowsPerPage)
@@ -42,7 +48,6 @@ const Champions = () => {
     setPage(1)
   }, [])
 
-  const navigate = useNavigate()
   const [searchTerm, setSearchTerm] = useState('')
 
   const debouncedSearch = useCallback(
@@ -52,15 +57,13 @@ const Champions = () => {
     []
   )
 
-  // const handleChangeStatus = (id: string) => {
-  //   console.log(id)
-  // }
-
   const filteredItems = useMemo(() => {
-    const filtered = champions?.filter((champion) => {
+    const filtered = items?.filter((item) => {
       const matchesSearch =
-        champion.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        champion.tags.map(tag => tag.toLowerCase()).includes(searchTerm.toLowerCase())
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+
+
+
       return matchesSearch
     })
 
@@ -68,7 +71,7 @@ const Champions = () => {
     const end = start + rowsPerPage
 
     return filtered?.slice(start, end)
-  }, [champions, page, rowsPerPage, searchTerm])
+  }, [items, page, rowsPerPage, searchTerm])
 
   const bottomContent = useMemo(() => {
     return (
@@ -82,10 +85,9 @@ const Champions = () => {
           color='default'
           page={page}
           total={Math.ceil(
-            (champions?.filter(
-              (champion) =>
-                champion.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                champion.tags.map(tag => tag.toLowerCase()).includes(searchTerm.toLowerCase())
+            (items?.filter(
+              (item) =>
+                item.name.toLowerCase().includes(searchTerm.toLowerCase())
             ).length || 0) / rowsPerPage
           )}
           variant='light'
@@ -93,29 +95,56 @@ const Champions = () => {
         />
       </div>
     )
-  }, [page, rowsPerPage, searchTerm, champions])
+  }, [page, rowsPerPage, searchTerm, items])
 
 
 
   // Update blogs query to include language
   useQuery({
-    queryKey: ['champions'],
+    queryKey: ['items'],
     queryFn: async () => {
-      const response = await championApi.getChampions({})
-      if (response.data.data) {
-        setChampions(response.data.data)
+      const response = await itemApi.getTFTItems({ lang })
+      if (response) {
+        console.log(response.data)
+        setItems(response.data)
       }
+
+    }
+  })
+  const langMutation = useMutation({
+    mutationFn: (lang: string) => {
+      return itemApi.getTFTItems({ lang })
+    },
+    onSuccess: (data) => {
+      setItems(data.data)
+    },
+    onError: () => {
+      toast.error('Có lỗi xảy ra')
+    },
+
+  })
+  const queryClient = useQueryClient()
+
+  const mutation = useMutation({
+    mutationFn: (slug: string) => {
+      return blogApi.deleteBlog(slug)
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+      toast.success('Xoá trang bị thành công!')
+    },
+    onError: () => {
+      toast.error('Có lỗi xảy ra')
     }
   })
 
-
-  const mutation = useMutation({
+  const mutationComments = useMutation({
     mutationFn: (id: string) => {
       return commentApi.getCommentsChampion(id)
     },
     onSuccess: (data) => {
       console.log(data.data.data.comments);
-      navigate(`/champions/comments`, {
+      navigate(`/tft-items/comments`, {
         state: {
           comments: data.data.data.comments
         }
@@ -125,42 +154,29 @@ const Champions = () => {
       toast.error('Có lỗi xảy ra')
     }
   })
-  const queryClient = useQueryClient()
-  const mutationDelete = useMutation({
-    mutationFn: (id: string) => {
-      return championApi.deleteChampion(id)
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['champions'] })
-      toast.success('Xoá tướng thành công!')
-    },
-    onError: () => {
-      toast.error('Có lỗi xảy ra')
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    const options: Intl.DateTimeFormatOptions = {
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: 'numeric',
+      second: 'numeric',
+      hour12: true
     }
-  })
-
-  const langMutation = useMutation({
-    mutationFn: (lang: string) => {
-      return championApi.getChampions({ lang })
-    },
-    onSuccess: (data) => {
-      setChampions(data.data.data)
-    },
-    onError: () => {
-      toast.error('Có lỗi xảy ra')
-    },
-
-  })
+    return date.toLocaleString('en-US', options)
+  }
   return (
     <div>
       <div className='flex justify-between items-center mb-4'>
         <div className='flex gap-4 items-center'>
-          <Link to='/champions/create'>
+          <Link to='/tft-items/create'>
             <Button size='sm' color='primary'>
-              Tạo tướng
+              Tạo trang bị
             </Button>
           </Link>
-
           <Select
             className='w-[150px]'
             label=''
@@ -184,7 +200,7 @@ const Champions = () => {
 
           <Input
             className='w-[300px]'
-            placeholder='Tìm kiếm theo tên tướng hoặc tags...'
+            placeholder='Tìm kiếm theo tên blog hoặc tags...'
             onChange={(e) => debouncedSearch(e.target.value)}
             startContent={
               <svg
@@ -208,38 +224,38 @@ const Champions = () => {
 
       <Table className='mt-4' isHeaderSticky isStriped aria-label='table'>
         <TableHeader>
-          <TableColumn className='w-[50px]'>Mã tướng</TableColumn>
-          <TableColumn className='min-w-[300px]'>Hình ảnh</TableColumn>
-          <TableColumn className='min-w-[300px]'>Tên</TableColumn>
-          <TableColumn className='min-w-[300px]'>Chi tiết</TableColumn>
-          <TableColumn className='min-w-[300px]'>Tags</TableColumn>
+          <TableColumn className='w-[50px]'>Mã trang bị</TableColumn>
+          <TableColumn className='w-[100px] text-center'>Ảnh</TableColumn>
+          <TableColumn className='  min-w-[300px]'>Tên trang bị</TableColumn>
+          <TableColumn className='text-center'>Ngày tạo</TableColumn>
           <TableColumn className='text-center'> </TableColumn>
         </TableHeader>
-        {champions?.length === 0 ? (
+        {items?.length === 0 ? (
           <TableBody emptyContent={'No information is available'}>{[]}</TableBody>
         ) : (
           <TableBody>
             {filteredItems?.map((item: Tour, index: number) => (
               <TableRow key={index + 1}>
                 <TableCell>{index + 1}</TableCell>
-
-                <TableCell className='uppercase'>
-                  <img src={item.imageUrl} alt={item.name} className='w-[100px] h-[100px] object-cover' />
+                <TableCell>
+                  <img className='aspect-square object-cover ' src={item.imageUrl} alt='anh' />
                 </TableCell>
                 <TableCell className='uppercase'>{item.name}</TableCell>
-                <TableCell className='uppercase'>{item.title}</TableCell>
 
-                <TableCell className='uppercase'><div className='flex flex-wrap gap-2'>
-                  {item.tags.map((items, indexs) => (
-                    <Chip color='primary' size='sm' key={indexs}>{items}</Chip>
-                  ))}
-                </div></TableCell>
-
+                <TableCell>
+                  <div className='space-y-1'>
+                    <div className='flex gap-3 text-xs'>
+                      <p className='italic'>{formatDate(item.createdAt)}</p>
+                      <p className='text-orange-900'></p>
+                    </div>
+                    <div className='text-xs line-clamp-3' dangerouslySetInnerHTML={{ __html: item.summary || item.content }}></div>
+                  </div>
+                </TableCell>
                 <TableCell>
                   <div className=' uppercase flex gap-x-2 items-center'>
                     <Button
                       onClick={() => {
-                        mutation.mutate(item._id)
+                        mutationComments.mutate(item._id)
                       }}
                       size='sm'
                       isIconOnly
@@ -249,11 +265,10 @@ const Champions = () => {
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="size-6 text-foreground-100">
                         <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                       </svg>
-
                     </Button>
                     <Button
                       onClick={() => {
-                        navigate(`/champions/edit/${item._id}`, {
+                        navigate(`/tft-items/edit/${item._id}`, {
                           state: item
                         })
                       }}
@@ -279,7 +294,7 @@ const Champions = () => {
                     </Button>
                     <Button
                       onClick={() => {
-                        mutationDelete.mutate(item._id)
+                        mutation.mutate(item.slug)
                       }}
                       size='sm'
                       isIconOnly
@@ -326,4 +341,4 @@ const Champions = () => {
   )
 }
 
-export default Champions
+export default TFTItems
