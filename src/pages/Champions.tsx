@@ -101,7 +101,7 @@ const Champions = () => {
   useQuery({
     queryKey: ['champions'],
     queryFn: async () => {
-      const response = await championApi.getChampions({})
+      const response = await championApi.getChampions({ lang })
       if (response.data.data) {
         setChampions(response.data.data)
       }
@@ -155,11 +155,11 @@ const Champions = () => {
     <div>
       <div className='flex justify-between items-center mb-4'>
         <div className='flex gap-4 items-center'>
-          <Link to='/champions/create'>
+          {/* <Link to='/champions/create'>
             <Button size='sm' color='primary'>
               Tạo tướng
             </Button>
-          </Link>
+          </Link> */}
 
           <Select
             className='w-[150px]'

@@ -20,6 +20,9 @@ import CreateChampion from '~/pages/CreateChampion'
 import CreateTFTChampion from '~/pages/CreateTFTChampion'
 import TFTItems from '~/pages/TFTItems'
 import TFTItemCreate from '~/pages/TFTItemCreate'
+import CreateWRChampion from '~/pages/CreateWRChampion'
+import Counters from '~/pages/Counters'
+import CreateCounter from '~/pages/CreateCounter'
 
 
 
@@ -167,10 +170,26 @@ const useRouteElements = () => {
           )
         },
         {
+          path: '/wr-champions/edit/:slug',
+          element: (
+            <ManagerLayout>
+              <CreateWRChampion />
+            </ManagerLayout>
+          )
+        },
+        {
           path: '/wr-champions',
           element: (
             <ManagerLayout>
               <WRChampions />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/counters',
+          element: (
+            <ManagerLayout>
+              <Counters />
             </ManagerLayout>
           )
         },
@@ -187,6 +206,22 @@ const useRouteElements = () => {
           element: (
             <ManagerLayout>
               <AddBlog />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/counters/create',
+          element: (
+            <ManagerLayout>
+              <CreateCounter />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/counters/edit/:slug',
+          element: (
+            <ManagerLayout>
+              <CreateCounter />
             </ManagerLayout>
           )
         },

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from 'react'
 import '~/styles/index.css'
-import { Button, Input, Select, SelectItem } from '@nextui-org/react'
+import { Button, Input } from '@nextui-org/react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -11,11 +11,13 @@ import { toast } from 'react-toastify'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { championApi } from '~/apis/champion.api'
 
-const CreateTFTChampion = () => {
+const CreateWRChampion = () => {
   const location = useLocation()
   const blog = location.state
   const navigate = useNavigate()
   const [imageUrl, setImageUrl] = useState<string[]>(blog ? [blog?.imageUrl] : [])
+  const [splashImageUrl, setSplashImageUrl] = useState<string[]>(blog ? [blog?.splashUrl] : [])
+  console.log(blog)
   const [skill, setSkill] = useState<{
     name: string
     description: string
@@ -72,10 +74,11 @@ const CreateTFTChampion = () => {
   // Tạo schema động dựa vào việc có đang chỉnh sửa tour hay không
   const createTourSchema = z.object({
     name: z.string().min(1, 'Vui lòng nhập tên tướng'),
-    lang: z.string().min(1, 'Vui lòng chọn ngôn ngữ'),
-    traits: z.string().min(1, 'Vui lòng nhập ít nhất 1 vai trò'),
+    // lang: z.string().min(1, 'Vui lòng chọn ngôn ngữ'),
+    roles: z.string().min(1, 'Vui lòng nhập ít nhất 1 vai trò'),
     patch: z.string().min(1, 'Vui lòng nhập phiên bản'),
-    cost: z.string().min(1, 'Vui lòng nhập chi phí')
+    title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
+    description: z.string().min(1, 'Vui lòng nhập mô tả'),
   })
 
   type FormData = z.infer<typeof createTourSchema>
@@ -89,22 +92,23 @@ const CreateTFTChampion = () => {
     resolver: zodResolver(createTourSchema),
     defaultValues: {
       name: blog ? blog.name : '',
-      traits: blog ? blog.traits.join(',') : ' ',
+      roles: blog ? blog.roles.join(',') : ' ',
       patch: blog ? blog.patch : '',
-      lang: blog ? blog.lang : '',
-      cost: blog ? blog.cost : ''
+      // lang: blog ? blog.lang : '',
+      title: blog ? blog.title : '',
+      description: blog ? blog.description : '',
     }
   })
-  const languages = [
-    {
-      code: 'vi',
-      name: 'Tiếng Việt'
-    },
-    {
-      code: 'en',
-      name: 'Tiếng Anh'
-    }
-  ]
+  // const languages = [
+  //   {
+  //     code: 'vi',
+  //     name: 'Tiếng Việt'
+  //   },
+  //   {
+  //     code: 'en',
+  //     name: 'Tiếng Anh'
+  //   }
+  // ]
 
   const createBlogMutation = useMutation({
     mutationFn: (data: any) => {
@@ -114,6 +118,7 @@ const CreateTFTChampion = () => {
       toast.success('Tạo tướng thành công!')
       reset()
       setImageUrl([])
+      setSplashImageUrl([])
     },
     onError: (err) => {
       toast.error('Có lỗi xảy ra khi tạo tướng!')
@@ -142,8 +147,9 @@ const CreateTFTChampion = () => {
       ...data,
       name: data.name,
       imageUrl: imageUrl[0],
+      splashUrl: splashImageUrl[0],
       stats: {},
-      traits: data.traits.split(',').map((role: string) => role.trim()),
+      roles: data.roles.split(',').map((role: string) => role.trim()),
       patch: data.patch,
       recommendedItems: [
         "Giáp Lưng Rồng",
@@ -152,23 +158,21 @@ const CreateTFTChampion = () => {
       ],
       recommendedItemsData: [
         {
-          name: 'Giáp Lưng Rồng',
+          name: 'Giáp Thạch Quỷ',
           imageUrl: 'https://sunderarmor.com/items/GargoyleStoneplate.png'
         },
         {
-          name: 'Áo Choàng Lửa',
+          name: 'Áo Choàng Lửa Mặt Trời',
           imageUrl: 'https://sunderarmor.com/items/SunfireCape.png'
         },
         {
-          name: 'Giáp Máu Warmog',
+          name: 'Giáp Warmog',
           imageUrl: 'https://sunderarmor.com/items/WarmogsArmor.png'
         }
       ],
-      cost: data.cost ? Number(data.cost) : 0,
       ability: {
-        name: 'Vỏ Bọc Hoàng Kim 1',
-        description:
-          'Nội tại: Giảm tất cả sát thương nhận vào 10/15/25 (AP). Chủ động: Gây 200/300/450 (AP) sát thương phép lên mục tiêu hiện tại và làm choáng chúng trong 2 giây.\\n\\n→ \\n→',
+        name: 'Gilded Endurance',
+        description: 'Mô tả kỹ năng của Alistar (cần cập nhật thực tế)',
         mana: '30 / 100'
       },
       setNumber: 14
@@ -251,15 +255,20 @@ const CreateTFTChampion = () => {
             render={({ field }) => <Input {...field} label='Tên tướng' errorMessage={errors.name?.message} />}
           />
           {errors.name && <p className='text-red-500 text-sm '>{errors.name?.message}</p>}
-
           <Controller
-            name='cost'
+            name='title'
             control={control}
-            render={({ field }) => (
-              <Input {...field} label='Chi phí' errorMessage={errors.cost?.message} type='number' />
-            )}
+            render={({ field }) => <Input {...field} label='Tiêu đề' errorMessage={errors.title?.message} />}
           />
-          {errors.cost && <p className='text-red-500 text-sm '>{errors.cost?.message}</p>}
+          {errors.title && <p className='text-red-500 text-sm '>{errors.title?.message}</p>}
+          <Controller
+            name='description'
+            control={control}
+            render={({ field }) => <Input {...field} label='Mô tả' errorMessage={errors.description?.message} />}
+          />
+          {errors.description && <p className='text-red-500 text-sm '>{errors.description?.message}</p>}
+
+
           <Controller
             name='patch'
             control={control}
@@ -309,14 +318,55 @@ const CreateTFTChampion = () => {
                 </div>
               )}
             </div>
+            <div>
+              <label className='block text-sm font-medium text-gray-700 mb-2'>Ảnh Splash</label>
+              <input
+                type='file'
+                accept='image/*'
+                onChange={(e) => handleImageUpload(e, 'splashImageUrl')}
+                className='w-full'
+              />
+              {splashImageUrl.length > 0 && (
+                <div className='grid grid-cols-2 gap-4 mt-4'>
+                  {splashImageUrl.map((image, index) => (
+                    <div key={index} className='relative group'>
+                      <img
+                        src={image}
+                        alt={`Tour ${index + 1}`}
+                        className='w-full aspect-square object-cover rounded'
+                      />
+                      <button
+                        type='button'
+                        onClick={() => setSplashImageUrl((prev) => prev.filter((_, i) => i !== index))}
+                        className='absolute top-2 right-2 bg-red-500 text-white p-1 rounded-full 
+                             opacity-0 group-hover:opacity-100 transition-opacity'
+                      >
+                        <svg
+                          xmlns='http://www.w3.org/2000/svg'
+                          className='h-4 w-4'
+                          viewBox='0 0 20 20'
+                          fill='currentColor'
+                        >
+                          <path
+                            fillRule='evenodd'
+                            d='M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z'
+                            clipRule='evenodd'
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
           <Controller
-            name='traits'
+            name='roles'
             control={control}
-            render={({ field }) => <Input {...field} label='Vai trò' errorMessage={errors.traits?.message} />}
+            render={({ field }) => <Input {...field} label='Vai trò' errorMessage={errors.roles?.message} />}
           />
-          {errors.traits && <p className='text-red-500 text-sm '>{errors.traits?.message}</p>}
-          <Controller
+          {errors.roles && <p className='text-red-500 text-sm '>{errors.roles?.message}</p>}
+          {/* <Controller
             name='lang'
             control={control}
             render={({ field }) => (
@@ -337,7 +387,7 @@ const CreateTFTChampion = () => {
               </Select>
             )}
           />
-          {errors.lang && <p className='text-red-500 text-sm '>{errors.lang.message}</p>}
+          {errors.lang && <p className='text-red-500 text-sm '>{errors.lang.message}</p>} */}
 
           {blog ? (
             <Button type='submit' color='primary' className='mt-6 w-full' isLoading={editTourMutation.isPending}>
@@ -354,4 +404,4 @@ const CreateTFTChampion = () => {
   )
 }
 
-export default CreateTFTChampion
+export default CreateWRChampion

@@ -12,35 +12,31 @@ import {
   useDisclosure,
   Select,
   SelectItem,
-  Accordion,
-  AccordionItem
+
 } from '@nextui-org/react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 
 import { useLocation, useNavigate } from 'react-router-dom'
 import MultiSelectChampion from '~/components/Autocompleted'
 import { championApi } from '~/apis/champion.api'
-import RuneSelector from '~/components/RuneSelected'
-import ItemBuildComponent from '~/components/ItemSelected'
+
 
 const CreateChampion = () => {
   const location = useLocation()
   const blog = location.state
   const navigate = useNavigate()
   const [imageUrl, setImageUrl] = useState<string[]>(blog ? [blog?.imageUrl] : [])
-  const [splashImageUrl, setSplashImageUrl] = useState<string[]>(blog ? [blog?.splashImageUrl] : [])
+  const [splashImageUrl, setSplashImageUrl] = useState<string[]>(blog ? [blog?.splashUrl] : [])
   const [countersSelected, setCountersSelected] = useState<any[]>([])
-  console.log(countersSelected)
   const [strongAgainstSelected, setStrongAgainstSelected] = useState<any[]>([])
   const [runesSelected, setRunesSelected] = useState<any[]>([])
   const [itemsSelected, setItemsSelected] = useState<any[]>([])
   const [langSelected, setLangSelected] = useState<string>('vi')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
-  const [champions, setChampions] = useState<any>([])
   const [skill, setSkill] = useState<{
     name: string
     description: string
@@ -93,7 +89,18 @@ const CreateChampion = () => {
       description: ''
     }
   ])
-
+  useEffect(() => {
+    if (blog?.abilities) {
+      const newSkillList = blog.abilities.map((ability: any, index: number) => ({
+        index: index,
+        name: ability.name,
+        image: ability.imageUrl,
+        skill: ability.name,
+        description: ability.description
+      }))
+      setSkillList(newSkillList)
+    }
+  }, [blog.abilities])
   const handleOpen = (
     name: string,
     image: string,
@@ -115,8 +122,6 @@ const CreateChampion = () => {
     name: z.string().min(1, 'Vui lòng nhập tên tướng'),
     title: z.string().min(1, 'Vui lòng nhập tiêu đề'),
     tags: z.string().min(1, 'Vui lòng nhập ít nhất 1 chủ đề'),
-    counters: z.string().min(1, 'Vui lòng nhập ít nhất 1 tướng khắc chế'),
-    strongAgainst: z.string().min(1, 'Vui lòng nhập ít nhất 1 tướng mạnh hơn khi đối đầu'),
     lang: z.string().min(1, 'Vui lòng chọn ngôn ngữ')
   })
 
@@ -147,15 +152,7 @@ const CreateChampion = () => {
     }
   ]
 
-  useQuery({
-    queryKey: ['champions-all'],
-    queryFn: async () => {
-      const response = await championApi.getChampions({})
-      if (response.data.data) {
-        setChampions(response.data.data)
-      }
-    }
-  })
+
   const [runes, setRunes] = useState<any[]>([]) // Thêm state để lưu trữ danh sách ngọc
   const fetchRunes = async (lang: string) => {
     try {
@@ -170,8 +167,8 @@ const CreateChampion = () => {
   }
 
   useEffect(() => {
-    fetchRunes('vi')
-  }, [])
+    fetchRunes(langSelected)
+  }, [langSelected])
 
   const createBlogMutation = useMutation({
     mutationFn: (data: any) => {
@@ -191,7 +188,7 @@ const CreateChampion = () => {
 
   const editTourMutation = useMutation({
     mutationFn: (data: any) => {
-      const slug = blog.slug
+      const slug = blog._id
       return championApi.editChampion(slug, data)
     },
     onSuccess: () => {
@@ -220,8 +217,8 @@ const CreateChampion = () => {
         imageUrl: skill.image
       })),
       tags: data.tags.split(',').map((tag) => tag.trim()),
-      counters: countersSelected,
-      strongAgainst: strongAgainstSelected,
+      counters: countersSelected.map((item) => item.id),
+      strongAgainst: strongAgainstSelected.map((item) => item.id),
       recommendedRunes: runesSelected,
       recommendedItems: itemsSelected
     }
@@ -475,18 +472,16 @@ const CreateChampion = () => {
           <div className='grid grid-cols-2 gap-4'>
             <MultiSelectChampion
               label='Chọn tướng khắc chế'
-              options={champions}
               defaultValues={blog?.counters?.length > 0 ? blog.counters : []}
               onChange={(val) => setCountersSelected(val)}
             />
             <MultiSelectChampion
               label='Tướng mạnh hơn khi đối đầu'
-              options={champions}
               defaultValues={blog?.strongAgainst?.length > 0 ? blog.strongAgainst : []}
               onChange={(val) => setStrongAgainstSelected(val)}
             />
           </div>
-          <Accordion>
+          {/* <Accordion>
             <AccordionItem
               key='1'
               aria-label='Accordion 1'
@@ -505,20 +500,20 @@ const CreateChampion = () => {
             >
               <ItemBuildComponent langSelected={langSelected} onChange={(val) => setItemsSelected(val)} />
             </AccordionItem>
-          </Accordion>
+          </Accordion> */}
 
-          <button type='submit' className='mt-6 w-full bg-blue-500 text-white p-2 rounded-md'>
+          {/* <button type='submit' className='mt-6 w-full bg-blue-500 text-white p-2 rounded-md'>
             Tạo Tướng
-          </button>
-          {/* {blog ? (
-          <Button type='submit' color='primary' className='mt-6 w-full' isLoading={editTourMutation.isPending}>
-            Chỉnh sửa
-          </Button>
-        ) : (
-          <Button type='submit' color='primary' className='mt-6 w-full' isLoading={createBlogMutation.isPending}>
-            Tạo Tướng
-          </Button>
-        )} */}
+          </button> */}
+          {blog ? (
+            <Button type='submit' color='primary' className='mt-6 w-full' isLoading={editTourMutation.isPending}>
+              Chỉnh sửa
+            </Button>
+          ) : (
+            <Button type='submit' color='primary' className='mt-6 w-full' isLoading={createBlogMutation.isPending}>
+              Tạo Tướng
+            </Button>
+          )}
         </form>
       </div>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
