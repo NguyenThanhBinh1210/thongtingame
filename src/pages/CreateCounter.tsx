@@ -28,14 +28,13 @@ const CreateCounter = () => {
   const [bestLaneCounters, setBestLaneCounters] = useState<any[]>([])
   const [worstLaneCounters, setWorstLaneCounters] = useState<any[]>([])
   const navigate = useNavigate()
-  console.log(blog)
   // Tạo schema động dựa vào việc có đang chỉnh sửa tour hay không
   const createTourSchema = z.object({
     championName: z.string().min(1, 'Vui lòng nhập tên tướng'),
     role: z.string().min(1, 'Vui lòng nhập vị trí'),
-    overallWinRate: z.number().min(1, 'Vui lòng nhập tỷ lệ win'),
-    pickRate: z.number().min(1, 'Vui lòng nhập tỷ lệ pick'),
-    banRate: z.number().min(1, 'Vui lòng nhập tỷ lệ ban'),
+    overallWinRate: z.string().min(1, 'Vui lòng nhập tỷ lệ win'),
+    pickRate: z.string().min(1, 'Vui lòng nhập tỷ lệ pick'),
+    banRate: z.string().min(1, 'Vui lòng nhập tỷ lệ ban'),
     patch: z.string().min(1, 'Vui lòng nhập phiên bản'),
     formattedContent: z.string().min(1, 'Vui lòng nhập nội dung'),
     weaknessesContent: z.string().min(1, 'Vui lòng nhập nội dung'),
@@ -56,9 +55,9 @@ const CreateCounter = () => {
     defaultValues: {
       championName: blog ? blog.championName : '',
       role: blog ? blog.role : '',
-      overallWinRate: blog ? blog.overallWinRate : '',
-      pickRate: blog ? blog.pickRate : '',
-      banRate: blog ? blog.banRate : '',
+      overallWinRate: blog ? String(blog.overallWinRate) : '',
+      pickRate: blog ? String(blog.pickRate) : '',
+      banRate: blog ? String(blog.banRate) : '',
       patch: blog ? blog.patch : '',
       formattedContent: blog
         ? Array.isArray(blog.formattedContent)
@@ -131,8 +130,8 @@ const CreateCounter = () => {
       patch: data.patch,
       strongAgainst: strongAgainst.map((item) => {
         return {
-          championId: String(item.name),
-          championName: String(item.name),
+          championId: String(item.name || item.championName),
+          championName: String(item.name || item.championName),
           winRate: 0,
           counterRating: 0,
           gameCount: 0,
@@ -146,8 +145,8 @@ const CreateCounter = () => {
       }),
       weakAgainst: weakAgainst.map((item) => {
         return {
-          championId: String(item.name),
-          championName: String(item.name),
+          championId: String(item.name || item.championName),
+          championName: String(item.name || item.championName),
           winRate: 0,
           counterRating: 0,
           gameCount: 0,
@@ -161,8 +160,8 @@ const CreateCounter = () => {
       }),
       bestLaneCounters: bestLaneCounters.map((item) => {
         return {
-          championId: String(item.name),
-          championName: String(item.name),
+          championId: String(item.name || item.championName),
+          championName: String(item.name || item.championName),
           winRate: 0,
           counterRating: 0,
           gameCount: 0,
@@ -176,8 +175,8 @@ const CreateCounter = () => {
       }),
       worstLaneCounters: worstLaneCounters.map((item) => {
         return {
-          championId: String(item.name),
-          championName: String(item.name),
+          championId: String(item.name || item.championName),
+          championName: String(item.name || item.championName),
           winRate: 0,
           counterRating: 0,
           gameCount: 0,
@@ -197,7 +196,6 @@ const CreateCounter = () => {
       rank: 'Emerald+'
     }
 
-    console.log(blogData)
     if (blog) {
       console.log('Editing blog with ID:', blog)
       editTourMutation.mutate(blogData)
@@ -223,7 +221,7 @@ const CreateCounter = () => {
             <Controller
               name='overallWinRate'
               control={control}
-              render={({ field }) => <Input type='number' {...field} label='Tỷ lệ win' errorMessage={errors.overallWinRate?.message} />}
+              render={({ field }) => <Input  {...field} label='Tỷ lệ win' errorMessage={errors.overallWinRate?.message} />}
             />
             {errors.overallWinRate && <p className='text-red-500 text-sm '>{errors.overallWinRate.message}</p>}
           </div>
@@ -231,7 +229,7 @@ const CreateCounter = () => {
             <Controller
               name='pickRate'
               control={control}
-              render={({ field }) => <Input type='number' {...field} label='Tỷ lệ pick' errorMessage={errors.pickRate?.message} />}
+              render={({ field }) => <Input  {...field} label='Tỷ lệ pick' errorMessage={errors.pickRate?.message} />}
             />
             {errors.pickRate && <p className='text-red-500 text-sm '>{errors.pickRate.message}</p>}
           </div>
@@ -239,7 +237,7 @@ const CreateCounter = () => {
             <Controller
               name='banRate'
               control={control}
-              render={({ field }) => <Input type='number' {...field} label='Tỷ lệ ban' errorMessage={errors.banRate?.message} />}
+              render={({ field }) => <Input  {...field} label='Tỷ lệ ban' errorMessage={errors.banRate?.message} />}
             />
             {errors.banRate && <p className='text-red-500 text-sm '>{errors.banRate.message}</p>}
           </div>
