@@ -129,11 +129,11 @@ const CreateWRChampion = () => {
   const editTourMutation = useMutation({
     mutationFn: (data: any) => {
       const slug = blog._id
-      return championApi.editTFTChampion(slug, data)
+      return championApi.editWRChampion(slug, data)
     },
     onSuccess: () => {
       toast.success('Sửa thành công!')
-      navigate('/tft-champions')
+      navigate('/wr-champions')
     },
     onError: (error) => {
       console.error('Edit error:', error)
@@ -151,31 +151,31 @@ const CreateWRChampion = () => {
       stats: {},
       roles: data.roles.split(',').map((role: string) => role.trim()),
       patch: data.patch,
-      recommendedItems: [
-        "Giáp Lưng Rồng",
-        "Áo Choàng Lửa",
-        "Giáp Máu Warmog"
-      ],
-      recommendedItemsData: [
-        {
-          name: 'Giáp Thạch Quỷ',
-          imageUrl: 'https://sunderarmor.com/items/GargoyleStoneplate.png'
-        },
-        {
-          name: 'Áo Choàng Lửa Mặt Trời',
-          imageUrl: 'https://sunderarmor.com/items/SunfireCape.png'
-        },
-        {
-          name: 'Giáp Warmog',
-          imageUrl: 'https://sunderarmor.com/items/WarmogsArmor.png'
-        }
-      ],
-      ability: {
-        name: 'Gilded Endurance',
-        description: 'Mô tả kỹ năng của Alistar (cần cập nhật thực tế)',
-        mana: '30 / 100'
-      },
-      setNumber: 14
+      // recommendedItems: [
+      //   "Giáp Lưng Rồng",
+      //   "Áo Choàng Lửa",
+      //   "Giáp Máu Warmog"
+      // ],
+      // recommendedItemsData: [
+      //   {
+      //     name: 'Giáp Thạch Quỷ',
+      //     imageUrl: 'https://sunderarmor.com/items/GargoyleStoneplate.png'
+      //   },
+      //   {
+      //     name: 'Áo Choàng Lửa Mặt Trời',
+      //     imageUrl: 'https://sunderarmor.com/items/SunfireCape.png'
+      //   },
+      //   {
+      //     name: 'Giáp Warmog',
+      //     imageUrl: 'https://sunderarmor.com/items/WarmogsArmor.png'
+      //   }
+      // ],
+      // ability: {
+      //   name: 'Gilded Endurance',
+      //   description: 'Mô tả kỹ năng của Alistar (cần cập nhật thực tế)',
+      //   mana: '30 / 100'
+      // },
+      // setNumber: 14
     }
     console.log(blogData)
     if (blog) {

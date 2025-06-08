@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import '~/styles/index.css'
-import { Button, Input, Select, SelectItem } from '@nextui-org/react'
+import { Accordion, AccordionItem, Button, Input, Select, SelectItem, Textarea } from '@nextui-org/react'
 import { useForm, Controller } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -92,7 +92,7 @@ const CreateTFTChampion = () => {
       traits: blog ? blog.traits.join(',') : ' ',
       patch: blog ? blog.patch : '',
       lang: blog ? blog.lang : '',
-      cost: blog ? blog.cost : ''
+      cost: blog ? String(blog.cost) : ''
     }
   })
   const languages = [
@@ -135,7 +135,12 @@ const CreateTFTChampion = () => {
       toast.error('Có lỗi xảy ra khi sửa!')
     }
   })
-
+  const [dataValue, setDataValue] = useState<any>(blog)
+  useEffect(() => {
+    if (blog) {
+      setDataValue(blog)
+    }
+  }, [blog])
   const onSubmit = handleSubmit((data) => {
     // Đảm bảo dữ liệu đúng định dạng
     const blogData = {
@@ -145,41 +150,53 @@ const CreateTFTChampion = () => {
       stats: {},
       traits: data.traits.split(',').map((role: string) => role.trim()),
       patch: data.patch,
-      recommendedItems: [
-        "Giáp Lưng Rồng",
-        "Áo Choàng Lửa",
-        "Giáp Máu Warmog"
-      ],
-      recommendedItemsData: [
-        {
-          name: 'Giáp Lưng Rồng',
-          imageUrl: 'https://sunderarmor.com/items/GargoyleStoneplate.png'
-        },
-        {
-          name: 'Áo Choàng Lửa',
-          imageUrl: 'https://sunderarmor.com/items/SunfireCape.png'
-        },
-        {
-          name: 'Giáp Máu Warmog',
-          imageUrl: 'https://sunderarmor.com/items/WarmogsArmor.png'
-        }
-      ],
+      recommendedItems: dataValue.recommendedItems,
+      recommendedItemsData: dataValue.recommendedItemsData,
       cost: data.cost ? Number(data.cost) : 0,
-      ability: {
-        name: 'Vỏ Bọc Hoàng Kim 1',
-        description:
-          'Nội tại: Giảm tất cả sát thương nhận vào 10/15/25 (AP). Chủ động: Gây 200/300/450 (AP) sát thương phép lên mục tiêu hiện tại và làm choáng chúng trong 2 giây.\\n\\n→ \\n→',
-        mana: '30 / 100'
-      },
+      ability: dataValue.ability,
       setNumber: 14
     }
-    console.log(blogData)
     if (blog) {
       editTourMutation.mutate(blogData)
     } else {
       createBlogMutation.mutate(blogData)
     }
   })
+
+  const handleAbilityChange = (field: string, value: string) => {
+    setDataValue((prev: any) => ({
+      ...prev,
+      ability: {
+        ...prev.ability,
+        [field]: value
+      }
+    }))
+  }
+
+  const handleRecommendedItemChange = (index: number, value: string) => {
+    setDataValue((prev: any) => {
+      const newItems = [...prev.recommendedItems]
+      newItems[index] = value
+      return {
+        ...prev,
+        recommendedItems: newItems
+      }
+    })
+  }
+
+  const handleRecommendedItemDataChange = (index: number, field: string, value: string) => {
+    setDataValue((prev: any) => {
+      const newItemData = [...prev.recommendedItemsData]
+      newItemData[index] = {
+        ...newItemData[index],
+        [field]: value
+      }
+      return {
+        ...prev,
+        recommendedItemsData: newItemData
+      }
+    })
+  }
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -338,7 +355,79 @@ const CreateTFTChampion = () => {
             )}
           />
           {errors.lang && <p className='text-red-500 text-sm '>{errors.lang.message}</p>}
+          <Accordion >
+            <AccordionItem title={<div className='block text-sm font-medium text-gray-700 mb-4 mt-4'>Kỹ năng</div>}>
+              <div className='space-y-4'>
+                <Input
+                  label='Tên'
+                  type='text'
+                  value={dataValue.ability.name}
+                  onChange={(e) => handleAbilityChange('name', e.target.value)}
+                />
 
+                <Textarea
+                  label='Mô tả'
+                  value={dataValue.ability.description}
+                  onChange={(e) => handleAbilityChange('description', e.target.value)}
+
+                />
+
+                <Input
+                  label='Mana'
+                  type='text'
+                  value={dataValue.ability.mana}
+                  onChange={(e) => handleAbilityChange('mana', e.target.value)}
+                />
+              </div>
+            </AccordionItem>
+            <AccordionItem title={<div className='block text-sm font-medium text-gray-700 mb-4 mt-4'>Trang bị khuyến nghị</div>}>
+              {dataValue.recommendedItems.map((item: string, index: number) => (
+                <div
+                  key={index}
+                >
+                  <Input
+                    label={`Item ${index + 1}`}
+                    type='text'
+                    value={item}
+                    onChange={(e) => handleRecommendedItemChange(index, e.target.value)}
+                    className='mb-4'
+                  />
+                </div>
+              ))}
+            </AccordionItem>
+            <AccordionItem title={<div className='block text-sm font-medium text-gray-700 mb-4 mt-4'>Trang bị khuyến nghị</div>}>
+              {dataValue.recommendedItemsData.map((item: any, index: number) => (
+                <div
+                  key={index}
+                  className='space-y-4 flex items-center gap-x-5'
+                >
+                  <img
+                    src={item.imageUrl}
+                    alt=''
+                    className='w-20 h-20 rounded-full'
+                  />
+                  <div className='space-y-4 flex-1'>
+
+                    <Input
+                      label='Tên'
+                      type='text'
+                      value={item.name}
+                      onChange={(e) => handleRecommendedItemDataChange(index, 'name', e.target.value)}
+                    />
+
+                    <Input
+                      label='Image URL'
+                      type='text'
+                      value={item.imageUrl}
+                      onChange={(e) => handleRecommendedItemDataChange(index, 'imageUrl', e.target.value)}
+                    />
+                  </div>
+
+
+                </div>
+              ))}
+            </AccordionItem>
+          </Accordion>
           {blog ? (
             <Button type='submit' color='primary' className='mt-6 w-full' isLoading={editTourMutation.isPending}>
               Chỉnh sửa
