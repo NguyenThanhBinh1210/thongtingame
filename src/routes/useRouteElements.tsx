@@ -23,6 +23,8 @@ import TFTItemCreate from '~/pages/TFTItemCreate'
 import CreateWRChampion from '~/pages/CreateWRChampion'
 import Counters from '~/pages/Counters'
 import CreateCounter from '~/pages/CreateCounter'
+import WRBuilds from '~/pages/WRBuilds'
+import CreateWRBuild from '~/pages/CreateWRBuild'
 
 
 
@@ -206,6 +208,30 @@ const useRouteElements = () => {
           element: (
             <ManagerLayout>
               <AddBlog />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/wr-builds',
+          element: (
+            <ManagerLayout>
+              <WRBuilds />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/wr-builds/create',
+          element: (
+            <ManagerLayout>
+              <CreateWRBuild />
+            </ManagerLayout>
+          )
+        },
+        {
+          path: '/wr-builds/edit/:slug',
+          element: (
+            <ManagerLayout>
+              <CreateWRBuild />
             </ManagerLayout>
           )
         },

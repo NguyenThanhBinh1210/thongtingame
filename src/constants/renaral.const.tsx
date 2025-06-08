@@ -73,6 +73,14 @@ export const menuCMS = [
         path: '/wr-champions'
       },
       // {
+      //   title: 'Danh sách build Wild Rift',
+      //   path: '/wr-builds'
+      // },
+      // {
+      //   title: 'Tạo build Wild Rift',
+      //   path: '/wr-builds/create'
+      // },
+      // {
       //   title: 'Tạo tướng',
       //   path: '/wr-champions/create'
       // },
@@ -105,6 +113,7 @@ export const menuCMS = [
         title: 'Danh sách trang bị TFT',
         path: '/tft-items'
       },
+
       // {
       //   title: 'Tạo tướng',
       //   path: '/tft-champions/create'

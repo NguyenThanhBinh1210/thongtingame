@@ -33,9 +33,9 @@ const CreateChampion = () => {
   const [splashImageUrl, setSplashImageUrl] = useState<string[]>(blog ? [blog?.splashUrl] : [])
   const [countersSelected, setCountersSelected] = useState<any[]>([])
   const [strongAgainstSelected, setStrongAgainstSelected] = useState<any[]>([])
-  const [runesSelected, setRunesSelected] = useState<any[]>([])
-  const [itemsSelected, setItemsSelected] = useState<any[]>([])
-  const [langSelected, setLangSelected] = useState<string>('vi')
+  // const [runesSelected, setRunesSelected] = useState<any[]>([])
+  // const [itemsSelected, setItemsSelected] = useState<any[]>([])
+  // const [langSelected, setLangSelected] = useState<string>('vi')
   const { isOpen, onOpen, onOpenChange } = useDisclosure()
   const [skill, setSkill] = useState<{
     name: string
@@ -153,22 +153,22 @@ const CreateChampion = () => {
   ]
 
 
-  const [runes, setRunes] = useState<any[]>([]) // Thêm state để lưu trữ danh sách ngọc
-  const fetchRunes = async (lang: string) => {
-    try {
-      const response = await fetch(
-        `https://ddragon.leagueoflegends.com/cdn/15.9.1/data/${lang === 'vi' ? 'vi_VN' : 'en_US'}/runesReforged.json`
-      )
-      const data = await response.json()
-      setRunes(data) // Lưu trữ danh sách ngọc vào state
-    } catch (error) {
-      console.error('Error fetching runes:', error)
-    }
-  }
+  // const [runes, setRunes] = useState<any[]>([]) // Thêm state để lưu trữ danh sách ngọc
+  // const fetchRunes = async (lang: string) => {
+  //   try {
+  //     const response = await fetch(
+  //       `https://ddragon.leagueoflegends.com/cdn/15.9.1/data/${lang === 'vi' ? 'vi_VN' : 'en_US'}/runesReforged.json`
+  //     )
+  //     const data = await response.json()
+  //     setRunes(data) // Lưu trữ danh sách ngọc vào state
+  //   } catch (error) {
+  //     console.error('Error fetching runes:', error)
+  //   }
+  // }
 
-  useEffect(() => {
-    fetchRunes(langSelected)
-  }, [langSelected])
+  // useEffect(() => {
+  //   fetchRunes(langSelected)
+  // }, [langSelected])
 
   const createBlogMutation = useMutation({
     mutationFn: (data: any) => {
@@ -219,8 +219,8 @@ const CreateChampion = () => {
       tags: data.tags.split(',').map((tag) => tag.trim()),
       counters: countersSelected.map((item) => item.id),
       strongAgainst: strongAgainstSelected.map((item) => item.id),
-      recommendedRunes: runesSelected,
-      recommendedItems: itemsSelected
+      // recommendedRunes: runesSelected,
+      // recommendedItems: itemsSelected
     }
     console.log(blogData)
     if (blog) {
@@ -455,8 +455,8 @@ const CreateChampion = () => {
                 onSelectionChange={(keys) => {
                   const selectedKey = Array.from(keys)[0]?.toString()
                   field.onChange(selectedKey)
-                  fetchRunes(selectedKey)
-                  setLangSelected(selectedKey)
+                  // fetchRunes(selectedKey)
+                  // setLangSelected(selectedKey)
                 }}
                 errorMessage={errors.lang?.message}
               >

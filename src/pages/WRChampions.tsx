@@ -6,7 +6,6 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import { toast } from 'react-toastify'
 import debounce from 'lodash/debounce'
 import { championApi } from '~/apis/champion.api'
-import { commentApi } from '~/apis/comment.api'
 import { useNavigate } from 'react-router-dom'
 
 // Thêm interface cho Tour
@@ -121,22 +120,22 @@ const WRChampions = () => {
     },
   })
 
-  const mutation = useMutation({
-    mutationFn: (id: string) => {
-      return commentApi.getCommentsChampion(id)
-    },
-    onSuccess: (data) => {
-      console.log(data.data.data.comments);
-      navigate(`/wr-champions/comments`, {
-        state: {
-          comments: data.data.data.comments
-        }
-      })
-    },
-    onError: () => {
-      toast.error('Có lỗi xảy ra')
-    }
-  })
+  // const mutation = useMutation({
+  //   mutationFn: (id: string) => {
+  //     return commentApi.getCommentsChampion(id)
+  //   },
+  //   onSuccess: (data) => {
+  //     console.log(data.data.data.comments);
+  //     navigate(`/wr-champions/comments`, {
+  //       state: {
+  //         comments: data.data.data.comments
+  //       }
+  //     })
+  //   },
+  //   onError: () => {
+  //     toast.error('Có lỗi xảy ra')
+  //   }
+  // })
 
   return (
     <div>
@@ -220,7 +219,9 @@ const WRChampions = () => {
                   <div className=' uppercase flex gap-x-2 items-center'>
                     <Button
                       onClick={() => {
-                        mutation.mutate(item._id)
+                        navigate(`/wr-builds/edit/${item._id}`, {
+                          state: item
+                        })
                       }}
                       size='sm'
                       isIconOnly
