@@ -20,13 +20,15 @@ interface MultiSelectProps {
   onChange?: (selected: Champion[]) => void
   label?: string
   defaultValues?: Champion[]
+  className?: string
 }
 
 const MultiSelectChampion: React.FC<MultiSelectProps> = ({
   placeholder = 'Chọn...',
   onChange,
   label,
-  defaultValues = []
+  defaultValues = [],
+  className
 }) => {
   const [inputValue, setInputValue] = useState('')
   const [champions, setChampions] = useState<any>([])
@@ -107,7 +109,7 @@ const MultiSelectChampion: React.FC<MultiSelectProps> = ({
   }, [])
 
   return (
-    <div className='z-[50] relative'>
+    <div className={` relative ${className ? className : 'z-[30]'}`}>
       <label className='block text-sm font-medium text-gray-700 mb-2'>{label}</label>
       <div className=' w-full max-w-md ' ref={ref}>
         <div
@@ -142,7 +144,7 @@ const MultiSelectChampion: React.FC<MultiSelectProps> = ({
         <AnimatePresence>
           {isOpen && filtered.length > 0 && (
             <motion.ul
-              className='absolute z-[100] bg-white border rounded-xl mt-1 w-full max-h-60 overflow-y-auto shadow'
+              className={`absolute  bg-white border rounded-xl mt-1 w-full max-h-60 overflow-y-auto shadow ${className ? className : 'z-[30]'}`}
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}

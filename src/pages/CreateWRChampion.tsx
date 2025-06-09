@@ -140,6 +140,22 @@ const CreateWRChampion = () => {
       toast.error('Có lỗi xảy ra khi sửa!')
     }
   })
+  // const [dataValue, setDataValue] = useState<any>(blog)
+  // useEffect(() => {
+  //   if (blog) {
+  //     setDataValue(blog)
+  //   }
+  // }, [blog])
+  // const handleRecommendedItemChange = (index: number, value: string) => {
+  //   setDataValue((prev: any) => {
+  //     const newItems = [...prev.recommendedItems]
+  //     newItems[index] = value
+  //     return {
+  //       ...prev,
+  //       recommendedItems: newItems
+  //     }
+  //   })
+  // }
 
   const onSubmit = handleSubmit((data) => {
     // Đảm bảo dữ liệu đúng định dạng
@@ -151,31 +167,7 @@ const CreateWRChampion = () => {
       stats: {},
       roles: data.roles.split(',').map((role: string) => role.trim()),
       patch: data.patch,
-      // recommendedItems: [
-      //   "Giáp Lưng Rồng",
-      //   "Áo Choàng Lửa",
-      //   "Giáp Máu Warmog"
-      // ],
-      // recommendedItemsData: [
-      //   {
-      //     name: 'Giáp Thạch Quỷ',
-      //     imageUrl: 'https://sunderarmor.com/items/GargoyleStoneplate.png'
-      //   },
-      //   {
-      //     name: 'Áo Choàng Lửa Mặt Trời',
-      //     imageUrl: 'https://sunderarmor.com/items/SunfireCape.png'
-      //   },
-      //   {
-      //     name: 'Giáp Warmog',
-      //     imageUrl: 'https://sunderarmor.com/items/WarmogsArmor.png'
-      //   }
-      // ],
-      // ability: {
-      //   name: 'Gilded Endurance',
-      //   description: 'Mô tả kỹ năng của Alistar (cần cập nhật thực tế)',
-      //   mana: '30 / 100'
-      // },
-      // setNumber: 14
+      // recommendedItems: dataValue.recommendedItems,
     }
     console.log(blogData)
     if (blog) {

@@ -244,21 +244,25 @@ const CreateCounter = () => {
         </div>
         <div className='grid md:grid-cols-2 gap-4'>
           <MultiSelectChampion
+            className='z-[54]'
             label='Tướng mạnh hơn'
             defaultValues={blog?.strongAgainst?.length > 0 ? blog.strongAgainst : []}
             onChange={(val) => setStrongAgainst(val)}
           />
           <MultiSelectChampion
+            className='z-[54]'
             label='Tướng khắc chế'
             defaultValues={blog?.weakAgainst?.length > 0 ? blog.weakAgainst : []}
             onChange={(val) => setWeakAgainst(val)}
           />
           <MultiSelectChampion
+            className='z-[50]'
             label='Tướng mạnh hơn khi đi đường'
             defaultValues={blog?.bestLaneCounters?.length > 0 ? blog.bestLaneCounters : []}
             onChange={(val) => setBestLaneCounters(val)}
           />
           <MultiSelectChampion
+            className='z-[50]'
             label='Tướng yếu hơn khi đi đường'
             defaultValues={blog?.worstLaneCounters?.length > 0 ? blog.worstLaneCounters : []}
             onChange={(val) => setWorstLaneCounters(val)}
